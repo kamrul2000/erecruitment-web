@@ -1,0 +1,106 @@
+<mat-card class="card">
+  <div class="header">
+    <div>
+      <div class="title">Candidates</div>
+      <div class="subtitle">Manage candidate profiles and CVs</div>
+    </div>
+
+    <div class="actions">
+      <mat-form-field appearance="outline" class="search">
+        <mat-label>Search</mat-label>
+        <input matInput (input)="search.set(($any($event.target)).value)" placeholder="name, email, phone..." />
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+
+      <button mat-flat-button color="primary" (click)="openCreate()">
+        <mat-icon>add</mat-icon>
+        Add Candidate
+      </button>
+    </div>
+  </div>
+
+  <div class="table-wrap" *ngIf="!loading(); else busy">
+    <table mat-table [dataSource]="filtered()" class="table">
+
+      <ng-container matColumnDef="fullName">
+        <th mat-header-cell *matHeaderCellDef> Name </th>
+        <td mat-cell *matCellDef="let c">
+          <div class="cell-main">{{ c.fullName }}</div>
+          <div class="cell-sub">{{ c.addressLine || '' }}</div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef> Email </th>
+        <td mat-cell *matCellDef="let c">{{ c.email }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="phone">
+        <th mat-header-cell *matHeaderCellDef> Phone </th>
+        <td mat-cell *matCellDef="let c">{{ c.phone || '-' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="experience">
+        <th mat-header-cell *matHeaderCellDef> Experience </th>
+        <td mat-cell *matCellDef="let c">
+          {{ c.noOfYearExperience ?? '-' }} yrs
+          <div class="cell-sub">{{ c.previousCompanyName || '' }}</div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="salary">
+        <th mat-header-cell *matHeaderCellDef> Salary </th>
+        <td mat-cell *matCellDef="let c">
+          <span *ngIf="c.expectedSalary !== null && c.expectedSalary !== undefined">
+            {{ c.expectedSalary }} {{ c.salaryCurrency || '' }}
+          </span>
+          <span *ngIf="c.expectedSalary === null || c.expectedSalary === undefined">-</span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="resume">
+        <th mat-header-cell *matHeaderCellDef> CV </th>
+        <td mat-cell *matCellDef="let c">
+          <button mat-stroked-button (click)="uploadResume(c)" matTooltip="Upload CV">
+            <mat-icon>upload</mat-icon>
+            Upload
+          </button>
+
+          <button mat-button color="primary" class="ml"
+                  [disabled]="!c.resumeUrl"
+                  (click)="openResume(c)"
+                  matTooltip="Open CV">
+            <mat-icon>description</mat-icon>
+            View
+          </button>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef class="actions-col"> Actions </th>
+        <td mat-cell *matCellDef="let c" class="actions-col">
+          <button mat-icon-button (click)="openEdit(c)" matTooltip="Edit">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="delete(c)" matTooltip="Delete">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <div class="empty" *ngIf="filtered().length === 0">
+      No candidates found.
+    </div>
+  </div>
+
+  <ng-template #busy>
+    <div class="busy">
+      <mat-spinner diameter="32"></mat-spinner>
+      <div>Loading candidates...</div>
+    </div>
+  </ng-template>
+</mat-card>

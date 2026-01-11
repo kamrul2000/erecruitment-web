@@ -1,0 +1,90 @@
+<h2 mat-dialog-title>
+  {{ mode === 'create' ? 'Add Candidate' : 'Edit Candidate' }}
+</h2>
+
+<mat-dialog-content class="content">
+  <div class="grid">
+    <mat-form-field appearance="outline">
+      <mat-label>Full Name</mat-label>
+  <input matInput formControlName="fullName" placeholder="Full Name" />
+      <mat-error *ngIf="form.controls['fullName'].touched && form.controls['fullName'].invalid">
+        Full name is required
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Email</mat-label>
+      <input matInput formControlName="email" placeholder="Email" />
+      <mat-error *ngIf="form.controls['email'].touched && form.controls['email'].invalid">
+        Valid email required
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Phone</mat-label>
+      <input matInput formControlName="phone" />
+      <mat-error *ngIf="form.controls['phone'].touched && form.controls['phone'].invalid">
+        Phone is required
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Address</mat-label>
+      <input matInput formControlName="addressLine" />
+      <mat-error *ngIf="form.controls['addressLine'].touched && form.controls['addressLine'].invalid">
+        Address is required
+      </mat-error>
+    </mat-form-field>
+
+    <mat-divider class="divider"></mat-divider>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Previous Company</mat-label>
+      <input matInput formControlName="previousCompanyName" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Years of Experience</mat-label>
+      <input matInput type="number" formControlName="noOfYearExperience" />
+    </mat-form-field>
+
+    <mat-divider class="divider"></mat-divider>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Institute</mat-label>
+      <input matInput formControlName="instituteName" />
+      <mat-error *ngIf="form.controls['instituteName'].touched && form.controls['instituteName'].invalid">
+        Institute is required
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Subject</mat-label>
+      <input matInput formControlName="subject" />
+      <mat-error *ngIf="form.controls['subject'].touched && form.controls['subject'].invalid">
+        Subject is required
+      </mat-error>
+    </mat-form-field>
+
+    <mat-divider class="divider"></mat-divider>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Expected Salary</mat-label>
+      <input matInput type="number" formControlName="expectedSalary" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Currency</mat-label>
+      <mat-select formControlName="salaryCurrency">
+        <mat-option *ngFor="let c of currencies" [value]="c">{{ c }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Cancel</button>
+  <button mat-flat-button color="primary" (click)="save()" [disabled]="loading()">
+    {{ mode === 'create' ? 'Create' : 'Save' }}
+  </button>
+</mat-dialog-actions>
