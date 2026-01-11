@@ -50,6 +50,8 @@ export class ShellComponent {
 
       // Tenants usually admin-only
       { label: 'Tenants', icon: 'apartment', path: '/tenants', roles: ['Admin'] },
+      { label: 'Users', icon: 'group', path: '/users', roles: ['Admin'] },
+
     ];
 
     return items.filter(i => !i.roles || i.roles.includes(role));

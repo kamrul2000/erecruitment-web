@@ -1,0 +1,82 @@
+.card {
+  border-radius: 16px;
+  padding: 14px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-end;
+  margin-bottom: 12px;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.subtitle {
+  font-size: 12px;
+  opacity: 0.7;
+  margin-top: 2px;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.search {
+  width: 280px;
+}
+
+.table-wrap {
+  overflow: auto;
+  border-radius: 12px;
+}
+
+.table {
+  width: 100%;
+}
+
+.cell-main {
+  font-weight: 650;
+}
+
+.cell-sub {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.actions-col {
+  width: 170px;
+  text-align: right;
+}
+
+.busy {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px;
+}
+
+.empty {
+  padding: 18px;
+  opacity: 0.7;
+}
+
+.chip {
+  border-radius: 999px;
+  font-weight: 650;
+}
+
+/* Role colors (soft) */
+.admin { background: rgba(120, 0, 255, .14); }
+.manager { background: rgba(0, 90, 255, .12); }
+.recruiter { background: rgba(0, 0, 0, .06); }
+
+/* Active/inactive */
+.active { background: rgba(0, 128, 0, .14); }
+.inactive { background: rgba(255, 0, 0, .14); }

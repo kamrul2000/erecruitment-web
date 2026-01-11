@@ -1,0 +1,95 @@
+<mat-card class="card">
+  <div class="header">
+    <div>
+      <div class="title">Users</div>
+      <div class="subtitle">Manage tenant staff accounts (Admin only)</div>
+    </div>
+
+    <div class="actions">
+      <mat-form-field appearance="outline" class="search">
+        <mat-label>Search</mat-label>
+        <input matInput (input)="search.set(($any($event.target)).value)" placeholder="name, email, role..." />
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+
+      <button mat-flat-button color="primary" (click)="openCreate()">
+        <mat-icon>person_add</mat-icon>
+        Add User
+      </button>
+    </div>
+  </div>
+
+  <div class="table-wrap" *ngIf="!loading(); else busy">
+    <table mat-table [dataSource]="filtered()" class="table">
+
+      <ng-container matColumnDef="fullName">
+        <th mat-header-cell *matHeaderCellDef> Name </th>
+        <td mat-cell *matCellDef="let u">
+          <div class="cell-main">{{ u.fullName }}</div>
+          <div class="cell-sub">{{ u.email }}</div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef> Email </th>
+        <td mat-cell *matCellDef="let u">{{ u.email }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="role">
+        <th mat-header-cell *matHeaderCellDef> Role </th>
+        <td mat-cell *matCellDef="let u">
+          <mat-chip class="chip" [ngClass]="roleClass(u.role)">
+            {{ u.role }}
+          </mat-chip>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef> Status </th>
+        <td mat-cell *matCellDef="let u">
+          <mat-chip class="chip" [ngClass]="statusClass(u.isActive)">
+            {{ u.isActive ? 'Active' : 'Inactive' }}
+          </mat-chip>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="createdAt">
+        <th mat-header-cell *matHeaderCellDef> Created </th>
+        <td mat-cell *matCellDef="let u">
+          {{ u.createdAt | date:'medium' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef class="actions-col"> Actions </th>
+        <td mat-cell *matCellDef="let u" class="actions-col">
+          <button mat-icon-button (click)="openEdit(u)" matTooltip="Edit user">
+            <mat-icon>edit</mat-icon>
+          </button>
+
+          <button mat-icon-button (click)="resetPassword(u)" matTooltip="Reset password">
+            <mat-icon>key</mat-icon>
+          </button>
+
+          <button mat-icon-button color="warn" (click)="toggleActive(u)" matTooltip="Enable/Disable">
+            <mat-icon>{{ u.isActive ? 'block' : 'check_circle' }}</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <div class="empty" *ngIf="filtered().length === 0">
+      No users found.
+    </div>
+  </div>
+
+  <ng-template #busy>
+    <div class="busy">
+      <mat-spinner diameter="32"></mat-spinner>
+      <div>Loading users...</div>
+    </div>
+  </ng-template>
+</mat-card>

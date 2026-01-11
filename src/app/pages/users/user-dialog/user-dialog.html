@@ -1,0 +1,53 @@
+<h2 mat-dialog-title>
+  {{ mode === 'create' ? 'Add User' : 'Edit User' }}
+</h2>
+
+<mat-dialog-content class="content" [formGroup]="form">
+  <div class="grid">
+    <mat-form-field appearance="outline">
+      <mat-label>Full Name</mat-label>
+      <input matInput formControlName="fullName" />
+      <mat-error *ngIf="form.controls['fullName'].touched && form.controls['fullName'].invalid">
+        Full name is required
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Email</mat-label>
+      <input matInput formControlName="email" />
+      <mat-error *ngIf="form.controls['email'].touched && form.controls['email'].invalid">
+        Valid email required
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Role</mat-label>
+      <mat-select formControlName="role">
+        <mat-option *ngFor="let r of roles" [value]="r">{{ r }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <div class="toggle">
+      <mat-slide-toggle formControlName="isActive">Active</mat-slide-toggle>
+    </div>
+
+    <mat-form-field appearance="outline" class="full" *ngIf="mode === 'create'">
+      <mat-label>Password</mat-label>
+      <input matInput type="password" formControlName="password" />
+      <mat-error *ngIf="form.controls['password'].touched && form.controls['password'].invalid">
+        Password required (min 6 chars)
+      </mat-error>
+    </mat-form-field>
+  </div>
+
+  <div class="hint">
+    Admin can create staff accounts for this tenant. Disable users instead of deleting.
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Cancel</button>
+  <button mat-flat-button color="primary" (click)="save()" [disabled]="loading()">
+    {{ mode === 'create' ? 'Create' : 'Save' }}
+  </button>
+</mat-dialog-actions>

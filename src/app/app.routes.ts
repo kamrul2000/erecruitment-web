@@ -14,6 +14,8 @@ export const routes: Routes = [
       { path: 'candidates', loadComponent: () => import('./pages/candidates/candidates/candidates').then(m => m.CandidatesComponent) },
       { path: 'jobs', loadComponent: () => import('./pages/jobs/jobs/jobs').then(m => m.JobsComponent) },
       { path: 'applications', loadComponent: () => import('./pages/applications/applications/applications').then(m => m.ApplicationsComponent) },
+      { path: 'users', loadComponent: () => import('./pages/users/users/users').then(m => m.UsersComponent) },
+
     ]
   },
 
