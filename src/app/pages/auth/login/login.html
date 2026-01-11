@@ -1,0 +1,51 @@
+<div class="page">
+  <mat-card class="card">
+    <div class="header">
+      <mat-icon class="logo">verified</mat-icon>
+      <div>
+        <div class="title">ERecruitment</div>
+        <div class="subtitle">Login to your tenant</div>
+      </div>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Tenant Slug</mat-label>
+        <input matInput formControlName="tenantSlug" placeholder="ex: acme" />
+        <mat-error *ngIf="form.controls.tenantSlug.touched && form.controls.tenantSlug.invalid">
+          Tenant slug is required
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" placeholder="admin@gmail.com" />
+        <mat-error *ngIf="form.controls.email.touched && form.controls.email.invalid">
+          Enter a valid email
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Password</mat-label>
+        <input matInput [type]="hidePassword() ? 'password' : 'text'" formControlName="password" />
+        <button mat-icon-button matSuffix type="button" (click)="hidePassword.set(!hidePassword())">
+          <mat-icon>{{ hidePassword() ? 'visibility' : 'visibility_off' }}</mat-icon>
+        </button>
+        <mat-error *ngIf="form.controls.password.touched && form.controls.password.invalid">
+          Password is required (min 6 chars)
+        </mat-error>
+      </mat-form-field>
+
+      <button mat-flat-button color="primary" class="full btn" [disabled]="loading()">
+        <ng-container *ngIf="!loading(); else spinner">Login</ng-container>
+        <ng-template #spinner>
+          <mat-spinner diameter="20"></mat-spinner>
+        </ng-template>
+      </button>
+
+      <div class="hint">
+        Use tenant slug + email + password.
+      </div>
+    </form>
+  </mat-card>
+</div>

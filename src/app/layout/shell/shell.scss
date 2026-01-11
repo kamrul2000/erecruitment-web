@@ -1,0 +1,85 @@
+.layout {
+  height: 100vh;
+}
+
+.sidenav {
+  width: 280px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+}
+
+.brand-icon {
+  font-size: 28px;
+  width: 28px;
+  height: 28px;
+}
+
+.brand-text .title {
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.brand-text .subtitle {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.toolbar-title {
+  margin-left: 12px;
+  font-weight: 600;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.small-icon {
+  margin-right: 6px;
+  opacity: 0.9;
+}
+
+.small-text {
+  font-size: 13px;
+  opacity: 0.95;
+}
+
+.content {
+  padding: 18px;
+}
+
+.sidenav-footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 12px 16px;
+  box-sizing: border-box;
+}
+
+.userbox {
+  padding: 12px 0;
+}
+
+.userbox .name {
+  font-weight: 600;
+}
+
+.userbox .meta {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.logout {
+  width: 100%;
+  margin-top: 8px;
+}

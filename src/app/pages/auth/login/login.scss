@@ -1,0 +1,52 @@
+.page {
+  height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+}
+
+.card {
+  width: 100%;
+  max-width: 420px;
+  padding: 18px;
+  border-radius: 16px;
+}
+
+.header {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.logo {
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
+}
+
+.title {
+  font-weight: 800;
+  font-size: 18px;
+}
+
+.subtitle {
+  font-size: 13px;
+  opacity: 0.7;
+}
+
+.full {
+  width: 100%;
+}
+
+.btn {
+  margin-top: 10px;
+  height: 44px;
+  border-radius: 10px;
+}
+
+.hint {
+  margin-top: 12px;
+  font-size: 12px;
+  opacity: 0.75;
+}

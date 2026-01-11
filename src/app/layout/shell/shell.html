@@ -1,0 +1,49 @@
+<mat-sidenav-container class="layout">
+  <mat-sidenav class="sidenav" [mode]="'side'" [opened]="isSidenavOpen()">
+    <div class="brand">
+      <mat-icon class="brand-icon">verified</mat-icon>
+      <div class="brand-text">
+        <div class="title">ERecruitment</div>
+        <div class="subtitle">SaaS Platform</div>
+      </div>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <mat-nav-list>
+      <a mat-list-item *ngFor="let item of menu()" (click)="go(item.path)">
+        <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+        <span matListItemTitle>{{ item.label }}</span>
+      </a>
+    </mat-nav-list>
+
+    <div class="sidenav-footer">
+      <mat-divider></mat-divider>
+      <div class="userbox" *ngIf="user() as u">
+        <div class="name">{{ u.fullName }}</div>
+        <div class="meta">{{ u.email }} • {{ u.role }}</div>
+      </div>
+
+      <button mat-stroked-button color="warn" class="logout" (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        Logout
+      </button>
+    </div>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <mat-toolbar class="toolbar" color="primary">
+      <button mat-icon-button (click)="toggleSidenav()" matTooltip="Toggle menu">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <span class="toolbar-title">{{ pageTitle() }}</span>
+      <span class="spacer"></span>
+      <mat-icon class="small-icon">lock</mat-icon>
+      <span class="small-text">{{ role() }}</span>
+    </mat-toolbar>
+
+    <div class="content">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
