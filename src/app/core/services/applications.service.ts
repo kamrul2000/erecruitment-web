@@ -33,20 +33,13 @@ export class ApplicationsService {
   }
 
   // Global search (GET recommended; your swagger shows POST but your earlier code used GET)
+  // ✅ Swagger shows POST
   search(query: ApplicationFilterQuery) {
-    let params = new HttpParams();
-    Object.entries(query).forEach(([k, v]) => {
-      if (v !== undefined && v !== null && v !== '') params = params.set(k, String(v));
-    });
-    return this.http.get<any>(`${this.base}/api/Applications/search`, { params });
+    return this.http.post<any>(`${this.base}/api/Applications/search`, query);
   }
 
-  // Pipeline by jobId (GET recommended)
-  byJob(jobId: string, query: ApplicationFilterQuery) {
-    let params = new HttpParams();
-    Object.entries(query).forEach(([k, v]) => {
-      if (v !== undefined && v !== null && v !== '') params = params.set(k, String(v));
-    });
-    return this.http.get<any>(`${this.base}/api/jobs/${jobId}/applications`, { params });
+  // ✅ Swagger shows POST
+  byJobSearch(jobId: string, query: ApplicationFilterQuery) {
+    return this.http.post<any>(`${this.base}/api/jobs/${jobId}/applications/search`, query);
   }
 }

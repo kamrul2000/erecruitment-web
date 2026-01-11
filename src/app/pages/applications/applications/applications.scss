@@ -1,0 +1,112 @@
+.card {
+  border-radius: 16px;
+  padding: 14px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-end;
+  margin-bottom: 10px;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.subtitle {
+  font-size: 12px;
+  opacity: 0.7;
+  margin-top: 2px;
+}
+
+.tab-pad {
+  padding: 10px 2px 2px 2px;
+}
+
+.job-picker {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.jobField {
+  width: 420px;
+}
+
+.job-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  opacity: 0.85;
+  font-weight: 600;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: flex-end;
+  padding: 8px 0 10px 0;
+}
+
+.filter-actions {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.w140 { width: 140px; }
+.w160 { width: 160px; }
+.w180 { width: 180px; }
+.w200 { width: 200px; }
+.w240 { width: 240px; }
+
+.table-wrap {
+  overflow: auto;
+  border-radius: 12px;
+}
+
+.table {
+  width: 100%;
+}
+
+.cell-main {
+  font-weight: 650;
+}
+
+.cell-sub {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.actions-col {
+  width: 160px;
+  text-align: right;
+}
+
+.busy {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px;
+}
+
+.empty {
+  padding: 18px;
+  opacity: 0.7;
+}
+
+.chip {
+  border-radius: 999px;
+  font-weight: 650;
+}
+
+.submitted { background: rgba(0,0,0,.06); }
+.reviewed { background: rgba(0, 90, 255, .12); }
+.shortlisted { background: rgba(0, 128, 0, .14); }
+.rejected { background: rgba(255, 0, 0, .14); }
+.hired { background: rgba(120, 0, 255, .14); }

@@ -1,0 +1,24 @@
+ <h2 mat-dialog-title>Change Status</h2>
+
+    <mat-dialog-content [formGroup]="form">
+      <mat-form-field appearance="outline" style="width:100%;">
+        <mat-label>Status</mat-label>
+        <mat-select formControlName="status">
+          <mat-option *ngFor="let s of statuses" [value]="s">{{ s }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" style="width:100%;">
+        <mat-label>Notes (optional)</mat-label>
+        <textarea matInput rows="4" formControlName="notes"></textarea>
+      </mat-form-field>
+
+      <div style="font-size:12px; opacity:.7;">
+        Current: <b>{{ current }}</b>
+      </div>
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="end">
+      <button mat-button (click)="close()">Cancel</button>
+      <button mat-flat-button color="primary" (click)="save()" [disabled]="form.invalid">Update</button>
+    </mat-dialog-actions>
