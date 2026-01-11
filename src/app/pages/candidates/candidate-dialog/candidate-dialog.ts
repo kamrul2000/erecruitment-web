@@ -13,7 +13,6 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { CandidatesService } from '../../../core/services/candidates.service';
 import { Candidate } from '../../../core/models/api-models';
-import { AfterViewInit } from '@angular/core';
 
 
 @Component({
@@ -40,7 +39,8 @@ export class CandidateDialogComponent  {
 
   mode: 'create' | 'edit';
   candidate?: Candidate;
-
+selectedFile: File | null = null;
+uploadedFileName: string | null = null;
   form:FormGroup;
 
   currencies = ['BDT', 'USD', 'EUR', 'INR'];
@@ -88,47 +88,118 @@ export class CandidateDialogComponent  {
       });
     }
   }
+  onFileSelected(event: Event) {
+  const input = event.target as HTMLInputElement;
+  if (input.files && input.files.length > 0) {
+    this.selectedFile = input.files[0];
+    this.uploadedFileName = this.selectedFile.name;
+  }
+}
+
+uploadResume() {
+  if (!this.selectedFile || !this.candidate?.id) return;
+  this.api.uploadResume(this.candidate.id, this.selectedFile).subscribe({
+    next: () => {
+      this.snack.open('Resume uploaded', 'Close', { duration: 2500 });
+      // Optionally refresh or update UI here
+    },
+    error: (err) => {
+      const msg = typeof err?.error === 'string' ? err.error : 'Upload failed';
+      this.snack.open(msg, 'Close', { duration: 3500 });
+    }
+  });
+}
+
   
 
-  save() {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
-
-    this.loading.set(true);
-
-    const payload = this.form.getRawValue();
-
-    if (this.mode === 'create') {
-      this.api.create(payload).subscribe({
-        next: () => {
-          this.loading.set(false);
-          this.snack.open('Candidate created', 'Close', { duration: 2500 });
-          this.dialogRef.close('refresh');
-        },
-        error: (err) => {
-          this.loading.set(false);
-          const msg = typeof err?.error === 'string' ? err.error : 'Create failed';
-          this.snack.open(msg, 'Close', { duration: 3500 });
-        }
-      });
-    } else {
-      const id = this.candidate!.id;
-      this.api.update(id, payload).subscribe({
-        next: () => {
-          this.loading.set(false);
-          this.snack.open('Candidate updated', 'Close', { duration: 2500 });
-          this.dialogRef.close('refresh');
-        },
-        error: (err) => {
-          this.loading.set(false);
-          const msg = typeof err?.error === 'string' ? err.error : 'Update failed';
-          this.snack.open(msg, 'Close', { duration: 3500 });
-        }
-      });
-    }
+save() {
+  if (this.form.invalid) {
+    this.form.markAllAsTouched();
+    return;
   }
+
+  this.loading.set(true);
+  const payload = this.form.getRawValue();
+
+  // ===== CREATE MODE =====
+  if (this.mode === 'create') {
+    this.api.create(payload).subscribe({
+      next: (created: Candidate) => {
+
+        // No resume selected → finish
+        if (!this.selectedFile) {
+          this.finishSuccess('Candidate created');
+          return;
+        }
+
+        // Resume selected → upload after create
+        this.api.uploadResume(created.id, this.selectedFile).subscribe({
+          next: () => {
+            this.finishSuccess('Candidate created with resume');
+          },
+          error: (err) => {
+            this.loading.set(false);
+            this.snack.open(
+              'Candidate created but resume upload failed',
+              'Close',
+              { duration: 3500 }
+            );
+          }
+        });
+      },
+      error: (err) => {
+        this.loading.set(false);
+        const msg = typeof err?.error === 'string' ? err.error : 'Create failed';
+        this.snack.open(msg, 'Close', { duration: 3500 });
+      }
+    });
+
+    return;
+  }
+
+  // ===== EDIT MODE =====
+  this.updateCandidate();
+}
+private updateCandidate() {
+  const id = this.candidate!.id;
+  const payload = this.form.getRawValue();
+
+  this.api.update(id, payload).subscribe({
+    next: () => {
+
+      // No new file
+      if (!this.selectedFile) {
+        this.finishSuccess('Candidate updated');
+        return;
+      }
+
+      // Upload new resume
+      this.api.uploadResume(id, this.selectedFile).subscribe({
+        next: () => {
+          this.finishSuccess('Candidate updated with resume');
+        },
+        error: () => {
+          this.loading.set(false);
+          this.snack.open(
+            'Candidate updated but resume upload failed',
+            'Close',
+            { duration: 3500 }
+          );
+        }
+      });
+    },
+    error: () => {
+      this.loading.set(false);
+      this.snack.open('Update failed', 'Close', { duration: 3500 });
+    }
+  });
+}
+private finishSuccess(message: string) {
+  this.loading.set(false);
+  this.snack.open(message, 'Close', { duration: 2500 });
+  this.dialogRef.close('refresh');
+}
+
 
   close() {
     this.dialogRef.close();

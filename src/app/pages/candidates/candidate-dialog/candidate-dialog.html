@@ -2,11 +2,11 @@
   {{ mode === 'create' ? 'Add Candidate' : 'Edit Candidate' }}
 </h2>
 
-<mat-dialog-content class="content">
+<mat-dialog-content class="content" [formGroup]="form">
   <div class="grid">
     <mat-form-field appearance="outline">
       <mat-label>Full Name</mat-label>
-  <input matInput formControlName="fullName" placeholder="Full Name" />
+  <input matInput formControlName="fullName"  />
       <mat-error *ngIf="form.controls['fullName'].touched && form.controls['fullName'].invalid">
         Full name is required
       </mat-error>
@@ -14,7 +14,7 @@
 
     <mat-form-field appearance="outline">
       <mat-label>Email</mat-label>
-      <input matInput formControlName="email" placeholder="Email" />
+      <input matInput formControlName="email"  />
       <mat-error *ngIf="form.controls['email'].touched && form.controls['email'].invalid">
         Valid email required
       </mat-error>
@@ -79,6 +79,22 @@
         <mat-option *ngFor="let c of currencies" [value]="c">{{ c }}</mat-option>
       </mat-select>
     </mat-form-field>
+   
+ 
+
+  <button mat-stroked-button type="button" (click)="fileInput.click()">
+  <mat-icon>upload</mat-icon>
+  Choose Resume
+</button>
+
+<input
+  #fileInput
+  type="file"
+  hidden
+  (change)="onFileSelected($event)"
+/>
+
+<span *ngIf="uploadedFileName">{{ uploadedFileName }}</span>
   </div>
 </mat-dialog-content>
 

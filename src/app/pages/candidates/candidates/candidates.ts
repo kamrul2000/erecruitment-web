@@ -116,29 +116,6 @@ export class CandidatesComponent {
     });
   }
 
-  uploadResume(candidate: Candidate) {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document';
-
-    input.onchange = () => {
-      const file = input.files?.[0];
-      if (!file) return;
-
-      this.api.uploadResume(candidate.id, file).subscribe({
-        next: () => {
-          this.snack.open('Resume uploaded', 'Close', { duration: 2500 });
-          this.load();
-        },
-        error: (err) => {
-          const msg = typeof err?.error === 'string' ? err.error : 'Upload failed';
-          this.snack.open(msg, 'Close', { duration: 3500 });
-        }
-      });
-    };
-
-    input.click();
-  }
 
   openResume(candidate: any) {
     // backend stores ResumeUrl like /uploads/{tenantId}/candidates/{id}/file.pdf
