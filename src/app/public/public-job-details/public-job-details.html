@@ -1,0 +1,102 @@
+<mat-toolbar color="primary" class="bar">
+  <a mat-button routerLink="/t/{{slug}}/jobs">
+    <mat-icon>arrow_back</mat-icon>
+    Jobs
+  </a>
+  <span class="title">Apply</span>
+</mat-toolbar>
+
+<div class="wrap">
+  <div *ngIf="loading(); else content" class="busy">
+    <mat-spinner diameter="34"></mat-spinner>
+    <div>Loading...</div>
+  </div>
+
+  <ng-template #content>
+    <mat-card class="job-card" *ngIf="job() as j">
+      <div class="job-title">{{ j.title }}</div>
+      <div class="meta">{{ j.department }} • {{ j.location || '—' }}</div>
+      <div class="desc">{{ j.description }}</div>
+    </mat-card>
+
+    <mat-card class="form-card">
+      <div class="form-title">Your Information</div>
+
+      <form class="grid" [formGroup]="form" (ngSubmit)="submit()">
+        <mat-form-field appearance="outline">
+          <mat-label>Full Name</mat-label>
+          <input matInput formControlName="fullName" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Phone</mat-label>
+          <input matInput formControlName="phone" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Address</mat-label>
+          <input matInput formControlName="addressLine" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Previous Company</mat-label>
+          <input matInput formControlName="previousCompanyName" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Years of Experience</mat-label>
+          <input matInput type="number" formControlName="noOfYearExperience" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Institute</mat-label>
+          <input matInput formControlName="instituteName" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Subject</mat-label>
+          <input matInput formControlName="subject" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Expected Salary</mat-label>
+          <input matInput type="number" formControlName="expectedSalary" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Currency</mat-label>
+          <input matInput formControlName="salaryCurrency" />
+        </mat-form-field>
+
+        <div class="full">
+          <label class="file">
+            <input type="file" (change)="pickFile($event)" accept=".pdf,.doc,.docx" />
+            <span>
+              <mat-icon>upload</mat-icon>
+              {{ resumeFile()?.name || 'Upload CV (pdf/doc/docx)' }}
+            </span>
+          </label>
+        </div>
+
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Notes (optional)</mat-label>
+          <textarea matInput rows="4" formControlName="notes"></textarea>
+        </mat-form-field>
+
+        <div class="full actions">
+          <button mat-flat-button color="primary" type="submit" [disabled]="submitting()">
+            <mat-icon>send</mat-icon>
+            Submit Application
+          </button>
+
+          <mat-spinner *ngIf="submitting()" diameter="24"></mat-spinner>
+        </div>
+      </form>
+    </mat-card>
+  </ng-template>
+</div>

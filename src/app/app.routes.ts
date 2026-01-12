@@ -3,6 +3,8 @@ import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   { path: 'login', loadComponent: () => import('./pages/auth/login/login').then(m => m.Login) },
+  { path: 't/:slug/jobs', loadComponent: () => import('./public/public-jobs/public-jobs').then(m => m.PublicJobsComponent) },
+  { path: 't/:slug/jobs/:id', loadComponent: () => import('./public/public-job-details/public-job-details').then(m => m.PublicJobDetailsComponent) },
 
   {
     path: '',
@@ -16,7 +18,6 @@ export const routes: Routes = [
       { path: 'applications', loadComponent: () => import('./pages/applications/applications/applications').then(m => m.ApplicationsComponent) },
       { path: 'users', loadComponent: () => import('./pages/users/users/users').then(m => m.UsersComponent) },
       { path: 'settings', loadComponent: () => import('./pages/settings/settings/settings').then(m => m.SettingsComponent) },
-{ path: 'settings', loadComponent: () => import('./pages/settings/settings/settings').then(m => m.SettingsComponent) },
 
     ]
   },

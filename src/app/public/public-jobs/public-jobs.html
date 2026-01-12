@@ -1,0 +1,33 @@
+<mat-toolbar color="primary" class="bar">
+  <mat-icon>work</mat-icon>
+  <span class="title">Careers • {{ slug }}</span>
+</mat-toolbar>
+
+<div class="wrap">
+  <div *ngIf="loading(); else content" class="busy">
+    <mat-spinner diameter="34"></mat-spinner>
+    <div>Loading jobs...</div>
+  </div>
+
+  <ng-template #content>
+    <div class="grid" *ngIf="jobs().length; else empty">
+      <mat-card class="job" *ngFor="let j of jobs()">
+        <div class="job-title">{{ j.title }}</div>
+        <div class="meta">{{ j.department }} • {{ j.location || '—' }}</div>
+
+        <div class="desc">{{ j.description || '' }}</div>
+
+        <button mat-flat-button color="primary" (click)="open(j)">
+          Apply
+          <mat-icon>arrow_forward</mat-icon>
+        </button>
+      </mat-card>
+    </div>
+
+    <ng-template #empty>
+      <mat-card class="empty">
+        No published jobs right now.
+      </mat-card>
+    </ng-template>
+  </ng-template>
+</div>
