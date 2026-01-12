@@ -1,0 +1,222 @@
+<mat-card class="card">
+  <div class="header">
+    <div>
+      <div class="title">Tenant Settings</div>
+      <div class="subtitle">Branding, limits, pipeline stages, email templates</div>
+    </div>
+
+    <button mat-stroked-button (click)="load()" [disabled]="loading()">
+      <mat-icon>refresh</mat-icon>
+      Refresh
+    </button>
+  </div>
+
+  <div *ngIf="!loading(); else busy">
+    <mat-tab-group>
+      <!-- Branding -->
+      <mat-tab label="Branding">
+        <div class="tab-pad">
+          <form class="grid" [formGroup]="brandingForm">
+            <mat-form-field appearance="outline" class="full">
+              <mat-label>Company Name</mat-label>
+              <input matInput formControlName="companyName" />
+              <mat-error *ngIf="brandingForm.controls.companyName.touched && brandingForm.controls.companyName.invalid">
+                Company name is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full">
+              <mat-label>Logo URL</mat-label>
+              <input matInput formControlName="logoUrl" placeholder="https://..." />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Primary Color</mat-label>
+              <input matInput formControlName="primaryColor" placeholder="#3f51b5" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Time Zone</mat-label>
+              <input matInput formControlName="timeZone" placeholder="Asia/Dhaka" />
+            </mat-form-field>
+
+            <div class="toggle full">
+              <mat-slide-toggle formControlName="careerPageEnabled">
+                Career Page Enabled
+              </mat-slide-toggle>
+            </div>
+
+            <div class="actions">
+              <button mat-flat-button color="primary" (click)="saveBranding()">
+                <mat-icon>save</mat-icon>
+                Save Branding
+              </button>
+            </div>
+          </form>
+        </div>
+      </mat-tab>
+
+      <!-- Limits -->
+      <mat-tab label="Limits">
+        <div class="tab-pad">
+          <form class="grid" [formGroup]="limitsForm">
+            <mat-form-field appearance="outline">
+              <mat-label>Max Resume Size (MB)</mat-label>
+              <input matInput type="number" formControlName="maxResumeSizeMb" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full">
+              <mat-label>Allowed Resume Types</mat-label>
+              <input matInput formControlName="allowedResumeTypes" placeholder="pdf,doc,docx" />
+              <div class="hint">Comma-separated extensions, ex: pdf,doc,docx</div>
+            </mat-form-field>
+
+            <div class="actions">
+              <button mat-flat-button color="primary" (click)="saveLimits()">
+                <mat-icon>save</mat-icon>
+                Save Limits
+              </button>
+            </div>
+          </form>
+        </div>
+      </mat-tab>
+
+      <!-- Pipeline Stages -->
+      <mat-tab label="Pipeline Stages">
+        <div class="tab-pad">
+          <div class="row">
+            <div class="info">
+              <div class="row-title">Pipeline Stages</div>
+              <div class="row-sub">Order controls application flow and status values.</div>
+            </div>
+            <button mat-flat-button color="primary" (click)="openCreateStage()">
+              <mat-icon>add</mat-icon>
+              Add Stage
+            </button>
+          </div>
+
+          <div class="table-wrap">
+            <table mat-table [dataSource]="stages()" class="table">
+              <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef> Name </th>
+                <td mat-cell *matCellDef="let s">
+                  <div class="cell-main">{{ s.name }}</div>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="key">
+                <th mat-header-cell *matHeaderCellDef> Key </th>
+                <td mat-cell *matCellDef="let s" class="mono">{{ s.key }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="sortOrder">
+                <th mat-header-cell *matHeaderCellDef> Order </th>
+                <td mat-cell *matCellDef="let s">{{ s.sortOrder }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="terminal">
+                <th mat-header-cell *matHeaderCellDef> Terminal </th>
+                <td mat-cell *matCellDef="let s">
+                  <mat-chip class="chip" [ngClass]="s.isTerminal ? 'terminal' : 'normal'">
+                    {{ s.isTerminal ? 'Yes' : 'No' }}
+                  </mat-chip>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef> Status </th>
+                <td mat-cell *matCellDef="let s">
+                  <mat-chip class="chip" [ngClass]="stageStatusClass(s.isActive)">
+                    {{ s.isActive ? 'Active' : 'Inactive' }}
+                  </mat-chip>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef class="actions-col"> Actions </th>
+                <td mat-cell *matCellDef="let s" class="actions-col">
+                  <button mat-icon-button (click)="openEditStage(s)" matTooltip="Edit">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button mat-icon-button color="warn" (click)="toggleStage(s)" matTooltip="Enable/Disable">
+                    <mat-icon>{{ s.isActive ? 'block' : 'check_circle' }}</mat-icon>
+                  </button>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="stageColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: stageColumns"></tr>
+            </table>
+
+            <div class="empty" *ngIf="stages().length === 0">
+              No stages found.
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+
+      <!-- Email Templates -->
+      <mat-tab label="Email Templates">
+        <div class="tab-pad">
+          <div class="row">
+            <div class="info">
+              <div class="row-title">Email Templates</div>
+              <div class="row-sub">Customize messages for status changes or invites.</div>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table mat-table [dataSource]="templates()" class="table">
+              <ng-container matColumnDef="type">
+                <th mat-header-cell *matHeaderCellDef> Type </th>
+                <td mat-cell *matCellDef="let t">
+                  <div class="cell-main">{{ t.templateType }}</div>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="enabled">
+                <th mat-header-cell *matHeaderCellDef> Enabled </th>
+                <td mat-cell *matCellDef="let t">
+                  <mat-chip class="chip" [ngClass]="t.isEnabled ? 'active' : 'inactive'">
+                    {{ t.isEnabled ? 'Yes' : 'No' }}
+                  </mat-chip>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="subject">
+                <th mat-header-cell *matHeaderCellDef> Subject </th>
+                <td mat-cell *matCellDef="let t">
+                  <div class="cell-sub">{{ t.subject }}</div>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef class="actions-col"> Actions </th>
+                <td mat-cell *matCellDef="let t" class="actions-col">
+                  <button mat-stroked-button (click)="openTemplate(t)">
+                    <mat-icon>edit</mat-icon>
+                    Edit
+                  </button>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="templateColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: templateColumns"></tr>
+            </table>
+
+            <div class="empty" *ngIf="templates().length === 0">
+              No templates found.
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+
+  <ng-template #busy>
+    <div class="busy">
+      <mat-spinner diameter="32"></mat-spinner>
+      <div>Loading settings...</div>
+    </div>
+  </ng-template>
+</mat-card>

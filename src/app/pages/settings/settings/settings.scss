@@ -1,0 +1,121 @@
+.card {
+  border-radius: 16px;
+  padding: 14px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-end;
+  margin-bottom: 10px;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.subtitle {
+  font-size: 12px;
+  opacity: 0.7;
+  margin-top: 2px;
+}
+
+.tab-pad {
+  padding: 12px 2px 2px 2px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  max-width: 920px;
+}
+
+.full { grid-column: 1 / -1; }
+
+.toggle {
+  display: flex;
+  align-items: center;
+  padding-left: 4px;
+}
+
+.actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 4px;
+}
+
+.hint {
+  font-size: 12px;
+  opacity: 0.7;
+  margin-top: 6px;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 10px;
+  gap: 12px;
+}
+
+.row-title {
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.row-sub {
+  font-size: 12px;
+  opacity: 0.7;
+  margin-top: 2px;
+}
+
+.table-wrap {
+  overflow: auto;
+  border-radius: 12px;
+}
+
+.table { width: 100%; }
+
+.cell-main { font-weight: 650; }
+.cell-sub { font-size: 12px; opacity: 0.75; }
+
+.mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 12px;
+}
+
+.actions-col {
+  width: 170px;
+  text-align: right;
+}
+
+.empty {
+  padding: 18px;
+  opacity: 0.7;
+}
+
+.busy {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px;
+}
+
+.chip {
+  border-radius: 999px;
+  font-weight: 650;
+}
+
+.active { background: rgba(0, 128, 0, .14); }
+.inactive { background: rgba(255, 0, 0, .14); }
+.terminal { background: rgba(120, 0, 255, .14); }
+.normal { background: rgba(0,0,0,.06); }
+
+@media (max-width: 820px) {
+  .grid { grid-template-columns: 1fr; }
+  .full { grid-column: auto; }
+}

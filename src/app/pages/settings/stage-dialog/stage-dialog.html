@@ -1,0 +1,33 @@
+<h2 mat-dialog-title>{{ mode === 'create' ? 'Add Stage' : 'Edit Stage' }}</h2>
+
+    <mat-dialog-content [formGroup]="form">
+      <div class="grid">
+        <mat-form-field appearance="outline">
+          <mat-label>Name</mat-label>
+          <input matInput formControlName="name" placeholder="Submitted" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Key</mat-label>
+          <input matInput formControlName="key" placeholder="submitted" />
+          <div style="font-size:12px; opacity:.7; margin-top:6px;">
+            Lowercase key, unique per tenant.
+          </div>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Sort Order</mat-label>
+          <input matInput type="number" formControlName="sortOrder" />
+        </mat-form-field>
+
+        <div class="toggles">
+          <mat-slide-toggle formControlName="isActive">Active</mat-slide-toggle>
+          <mat-slide-toggle formControlName="isTerminal">Terminal</mat-slide-toggle>
+        </div>
+      </div>
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="end">
+      <button mat-button (click)="close()">Cancel</button>
+      <button mat-flat-button color="primary" (click)="save()" [disabled]="form.invalid">Save</button>
+    </mat-dialog-actions>

@@ -1,0 +1,6 @@
+.grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+
+.toggles { display:flex; gap:14px; align-items:center; padding-top: 6px; }
+
+    
+@media (max-width: 720px){ .grid { grid-template-columns:1fr; } }

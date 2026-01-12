@@ -1,0 +1,37 @@
+<h2 mat-dialog-title>Edit Template</h2>
+
+    <mat-dialog-content [formGroup]="form">
+      <div class="top">
+        <div>
+          <div style="font-weight:800;">{{ form.value.templateType }}</div>
+          <div style="font-size:12px; opacity:.7;">Use merge fields below</div>
+        </div>
+        <mat-slide-toggle formControlName="isEnabled">Enabled</mat-slide-toggle>
+      </div>
+
+      <div class="chips">
+<mat-chip class="chip">{{ '{' }}CandidateName{{ '}' }}</mat-chip>
+<mat-chip class="chip">{{ '{' }}JobTitle{{ '}' }}</mat-chip>
+<mat-chip class="chip">{{ '{' }}CompanyName{{ '}' }}</mat-chip>
+<mat-chip class="chip">{{ '{' }}TenantSlug{{ '}' }}</mat-chip>
+
+      </div>
+
+      <mat-form-field appearance="outline" style="width:100%;">
+        <mat-label>Subject</mat-label>
+        <input matInput formControlName="subject" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" style="width:100%;">
+        <mat-label>Body</mat-label>
+        <textarea matInput rows="10" formControlName="body"></textarea>
+        <div style="font-size:12px; opacity:.7; margin-top:6px;">
+          You can keep it plain text now; later you can send HTML emails.
+        </div>
+      </mat-form-field>
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="end">
+      <button mat-button (click)="close()">Cancel</button>
+      <button mat-flat-button color="primary" (click)="save()" [disabled]="form.invalid">Save</button>
+    </mat-dialog-actions>
