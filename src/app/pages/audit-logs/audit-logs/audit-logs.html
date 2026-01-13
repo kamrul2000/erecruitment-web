@@ -1,0 +1,120 @@
+<mat-card class="card">
+  <div class="header">
+    <div>
+      <div class="title">Audit Logs</div>
+      <div class="subtitle">Who did what, when (Admin only)</div>
+    </div>
+  </div>
+
+  <div class="filters" [formGroup]="form">
+    <mat-form-field appearance="outline" class="w170">
+      <mat-label>From</mat-label>
+      <input matInput formControlName="from" placeholder="2026-01-01" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w170">
+      <mat-label>To</mat-label>
+      <input matInput formControlName="to" placeholder="2026-01-31" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w220">
+      <mat-label>Action</mat-label>
+      <input matInput formControlName="action" placeholder="Application.StatusChanged" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w200">
+      <mat-label>Entity Type</mat-label>
+      <mat-select formControlName="entityType">
+        <mat-option *ngFor="let e of entityTypes" [value]="e">{{ e || 'Any' }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w240">
+      <mat-label>EntityId</mat-label>
+      <input matInput formControlName="entityId" placeholder="GUID" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w240">
+      <mat-label>Keyword</mat-label>
+      <input matInput formControlName="keyword" placeholder="email, summary..." />
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+
+    <div class="filter-actions">
+      <button mat-flat-button color="primary" (click)="search(true)">
+        <mat-icon>filter_alt</mat-icon>
+        Apply
+      </button>
+      <button mat-button (click)="reset()">Reset</button>
+    </div>
+  </div>
+
+  <div *ngIf="!loading(); else busy" class="table-wrap">
+    <table mat-table [dataSource]="items()" class="table">
+      <ng-container matColumnDef="createdAt">
+        <th mat-header-cell *matHeaderCellDef> Time </th>
+        <td mat-cell *matCellDef="let r">{{ r.createdAt | date:'medium' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef> Action </th>
+        <td mat-cell *matCellDef="let r">
+          <div class="cell-main">{{ r.action }}</div>
+          <div class="cell-sub">{{ r.entityType }} • {{ r.entityId || '—' }}</div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="entity">
+        <th mat-header-cell *matHeaderCellDef> Entity </th>
+        <td mat-cell *matCellDef="let r">{{ r.entityType }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="actor">
+        <th mat-header-cell *matHeaderCellDef> Actor </th>
+        <td mat-cell *matCellDef="let r">
+          <div class="cell-main">{{ r.actorEmail || 'Public/Anonymous' }}</div>
+          <div class="cell-sub">{{ r.actorRole || '' }}</div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="summary">
+        <th mat-header-cell *matHeaderCellDef> Summary </th>
+        <td mat-cell *matCellDef="let r">{{ r.summary || '—' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="ip">
+        <th mat-header-cell *matHeaderCellDef> IP </th>
+        <td mat-cell *matCellDef="let r">{{ r.ipAddress || '—' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef class="actions-col"> </th>
+        <td mat-cell *matCellDef="let r" class="actions-col">
+          <button mat-icon-button (click)="openDetails(r)">
+            <mat-icon>visibility</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+
+    <mat-paginator
+      [length]="total()"
+      [pageIndex]="page() - 1"
+      [pageSize]="pageSize()"
+      [pageSizeOptions]="[10, 20, 50, 100]"
+      (page)="onPage($event)">
+    </mat-paginator>
+
+    <div class="empty" *ngIf="items().length === 0">No logs found.</div>
+  </div>
+
+  <ng-template #busy>
+    <div class="busy">
+      <mat-spinner diameter="32"></mat-spinner>
+      <div>Loading audit logs...</div>
+    </div>
+  </ng-template>
+</mat-card>

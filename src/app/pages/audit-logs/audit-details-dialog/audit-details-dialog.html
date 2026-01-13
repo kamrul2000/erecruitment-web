@@ -1,0 +1,20 @@
+ <h2 mat-dialog-title>Audit Details</h2>
+
+    <mat-dialog-content>
+      <div class="row"><b>Time:</b> {{ data.createdAt | date:'medium' }}</div>
+      <div class="row"><b>Action:</b> {{ data.action }}</div>
+      <div class="row"><b>Entity:</b> {{ data.entityType }} • {{ data.entityId || '—' }}</div>
+      <div class="row"><b>Actor:</b> {{ data.actorEmail || 'Public/Anonymous' }} ({{ data.actorRole || '-' }})</div>
+      <div class="row"><b>IP:</b> {{ data.ipAddress || '—' }}</div>
+      <div class="row"><b>UserAgent:</b> {{ data.userAgent || '—' }}</div>
+
+      <div class="row" style="margin-top:10px;"><b>Summary:</b></div>
+      <div class="box">{{ data.summary || '—' }}</div>
+
+      <div class="row" style="margin-top:10px;"><b>DataJson:</b></div>
+      <pre class="pre">{{ data.dataJson || '{}' }}</pre>
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="end">
+      <button mat-button mat-dialog-close>Close</button>
+    </mat-dialog-actions>

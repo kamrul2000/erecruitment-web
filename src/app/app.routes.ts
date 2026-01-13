@@ -18,6 +18,7 @@ export const routes: Routes = [
       { path: 'applications', loadComponent: () => import('./pages/applications/applications/applications').then(m => m.ApplicationsComponent) },
       { path: 'users', loadComponent: () => import('./pages/users/users/users').then(m => m.UsersComponent) },
       { path: 'settings', loadComponent: () => import('./pages/settings/settings/settings').then(m => m.SettingsComponent) },
+      { path: 'audit-logs', loadComponent: () => import('./pages/audit-logs/audit-logs/audit-logs').then(m => m.AuditLogsComponent) },
 
     ]
   },

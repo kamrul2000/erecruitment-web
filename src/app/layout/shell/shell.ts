@@ -52,6 +52,7 @@ export class ShellComponent {
       { label: 'Tenants', icon: 'apartment', path: '/tenants', roles: ['Admin'] },
       { label: 'Users', icon: 'group', path: '/users', roles: ['Admin'] },
       { label: 'Settings', icon: 'settings', path: '/settings', roles: ['Admin'] },
+      { label: 'Audit Logs', icon: 'receipt_long', path: '/audit-logs', roles: ['Admin'] },
 
     ];
 
