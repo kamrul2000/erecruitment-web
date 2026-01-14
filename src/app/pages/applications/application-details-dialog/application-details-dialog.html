@@ -58,7 +58,7 @@
 
     <mat-tab label="Interviews">
       <!-- ✅ THIS is where your interviews component belongs -->
-      <app-application-interviews [applicationId]="app().id"></app-application-interviews>
+      <app-application-interviews [applicationId]="app().id || app().applicationId"></app-application-interviews>
     </mat-tab>
   </mat-tab-group>
 </div>

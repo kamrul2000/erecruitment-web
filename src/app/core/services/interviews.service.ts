@@ -27,7 +27,12 @@ export class InterviewsService {
     return this.http.put<void>(`${this.base}/api/Interviews/${interviewId}/complete`, {});
   }
 
-  submitFeedback(interviewId: string, payload: any) {
-    return this.http.put<void>(`${this.base}/api/Interviews/${interviewId}/feedback`, payload);
-  }
+ submitFeedback(interviewId: string, payload: any) {
+  return this.http.put<void>(
+    `${this.base}/api/Interviews/${interviewId}/feedback`,
+    payload
+  );
+}
+
+
 }

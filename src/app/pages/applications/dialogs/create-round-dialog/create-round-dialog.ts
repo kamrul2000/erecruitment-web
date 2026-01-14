@@ -18,8 +18,8 @@ import { MatButtonModule } from '@angular/material/button';
     MatInputModule,
     MatButtonModule
   ],
-  template:'./create-round-dialog.html'
-})
+ templateUrl: './create-round-dialog.html',
+  styleUrls: ['./create-round-dialog.scss']})
 export class CreateRoundDialogComponent {
   form!: ReturnType<FormBuilder['group']>;
 

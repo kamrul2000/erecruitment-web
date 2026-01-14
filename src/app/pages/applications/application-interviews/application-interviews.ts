@@ -1,4 +1,4 @@
-import { Component, Input, signal, computed } from '@angular/core';
+import { Component, Input, signal, computed ,OnChanges, SimpleChanges} from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { MatCardModule } from '@angular/material/card';
@@ -34,7 +34,7 @@ import { FeedbackDialogComponent } from '../dialogs/feedback-dialog/feedback-dia
   templateUrl: './application-interviews.html',
   styleUrls: ['./application-interviews.scss']
 })
-export class ApplicationInterviewsComponent {
+export class ApplicationInterviewsComponent implements OnChanges{
   @Input({ required: true }) applicationId!: string;
 
   loading = signal(false);
@@ -89,9 +89,13 @@ export class ApplicationInterviewsComponent {
 
   ngOnInit() {
     this.loadUsers();
-    this.load();
   }
-
+ ngOnChanges(changes: SimpleChanges) {
+    if (changes['applicationId'] && this.applicationId) {
+      this.loadUsers();
+      this.load();
+    }
+  }
   loadUsers() {
     // If you have a different users endpoint, update UsersService.getAll()
     this.usersApi.getAll().subscribe({
@@ -100,25 +104,37 @@ export class ApplicationInterviewsComponent {
     });
   }
 
-  load() {
-    this.loading.set(true);
-    this.api.getByApplication(this.applicationId).subscribe({
-      next: (res) => {
-        this.rounds.set(res?.rounds ?? []);
-        this.interviews.set(res?.interviews ?? []);
-        this.participants.set(res?.participants ?? []);
-        this.feedbacks.set(res?.feedbacks ?? []);
-        this.loading.set(false);
-      },
-      error: (err) => {
-        this.loading.set(false);
-        const msg = typeof err?.error === 'string' ? err.error : 'Failed to load interviews';
-        this.snack.open(msg, 'Close', { duration: 3500 });
-      }
-    });
-  }
+ load() {
+  if (!this.applicationId) return;
+
+  this.loading.set(true);
+  this.api.getByApplication(this.applicationId).subscribe({
+    next: (res) => {
+  const interviews = (res?.interviews ?? []).map((i: any) => ({
+    ...i,
+    interviewId: i.interviewId ?? i.id   // normalize
+  }));
+
+  this.rounds.set(res?.rounds ?? []);
+  this.interviews.set(interviews);
+  this.participants.set(res?.participants ?? []);
+  this.feedbacks.set(res?.feedbacks ?? []);
+  this.loading.set(false);
+},
+    error: (err) => {
+      this.loading.set(false);
+      const msg = typeof err?.error === 'string'
+        ? err.error
+        : 'Failed to load interviews';
+      this.snack.open(msg, 'Close', { duration: 3500 });
+    }
+  });
+}
+
 
   openCreateRound() {
+      console.log('Add round clicked, applicationId =', this.applicationId);
+
     const ref = this.dialog.open(CreateRoundDialogComponent, {
       width: '520px',
       data: { applicationId: this.applicationId, existing: this.rounds() }
@@ -201,7 +217,7 @@ export class ApplicationInterviewsComponent {
     ref.afterClosed().subscribe((payload: any) => {
       if (!payload) return;
 
-      this.api.submitFeedback(interview.id, payload).subscribe({
+      this.api.submitFeedback(interview.interviewId, payload).subscribe({
         next: () => {
           this.snack.open('Feedback saved', 'Close', { duration: 2500 });
           this.load();
