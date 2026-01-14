@@ -1,0 +1,64 @@
+<div class="wrap">
+  <div class="top">
+    <div>
+      <div class="title">Application Details</div>
+      <div class="sub">
+        {{ app().candidateName || app().fullName }} • {{ app().jobTitle }}
+      </div>
+    </div>
+
+    <div class="top-actions">
+      <button mat-stroked-button (click)="openResume()" [disabled]="!(app().resumeUrlSnapshot || app().resumeUrl)">
+        <mat-icon>description</mat-icon>
+        CV
+      </button>
+
+      <button mat-button (click)="close(false)">Close</button>
+    </div>
+  </div>
+
+  <mat-tab-group>
+    <mat-tab label="Overview">
+      <mat-card class="card">
+        <div class="grid">
+          <div>
+            <div class="label">Candidate</div>
+            <div class="value">{{ app().candidateName || app().fullName }}</div>
+            <div class="hint">{{ app().candidateEmail || app().email }}</div>
+            <div class="hint">{{ app().candidatePhone || app().phone }}</div>
+          </div>
+
+          <div>
+            <div class="label">Job</div>
+            <div class="value">{{ app().jobTitle }}</div>
+            <div class="hint">{{ app().department }}</div>
+          </div>
+
+          <div>
+            <div class="label">Status</div>
+            <mat-chip class="chip">{{ app().status }}</mat-chip>
+          </div>
+
+          <div>
+            <div class="label">Expected Salary</div>
+            <div class="value">
+              {{ app().expectedSalary ?? '—' }} {{ app().salaryCurrency || '' }}
+            </div>
+          </div>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="notes" *ngIf="app().notes">
+          <div class="label">Notes</div>
+          <div class="value">{{ app().notes }}</div>
+        </div>
+      </mat-card>
+    </mat-tab>
+
+    <mat-tab label="Interviews">
+      <!-- ✅ THIS is where your interviews component belongs -->
+      <app-application-interviews [applicationId]="app().id"></app-application-interviews>
+    </mat-tab>
+  </mat-tab-group>
+</div>

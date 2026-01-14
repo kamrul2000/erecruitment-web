@@ -176,6 +176,10 @@
           <button mat-icon-button [disabled]="!(r.resumeUrlSnapshot || r.resumeUrl)" (click)="openResume(r)" matTooltip="Open CV">
             <mat-icon>description</mat-icon>
           </button>
+          <button mat-icon-button (click)="openDetails(r)" matTooltip="View details">
+  <mat-icon>visibility</mat-icon>
+</button>
+
         </td>
       </ng-container>
 

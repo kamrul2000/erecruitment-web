@@ -1,0 +1,109 @@
+<mat-card class="card">
+  <div class="header">
+    <div>
+      <div class="title">Interviews</div>
+      <div class="sub">Schedule rounds, add interviewers, collect feedback</div>
+    </div>
+    <div class="actions">
+      <button mat-stroked-button (click)="load()" [disabled]="loading()">
+        <mat-icon>refresh</mat-icon> Refresh
+      </button>
+      <button mat-flat-button color="primary" (click)="openCreateRound()">
+        <mat-icon>add</mat-icon> Add Round
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="loading(); else content" class="busy">
+    <mat-spinner diameter="28"></mat-spinner>
+    <div>Loading interviews...</div>
+  </div>
+
+  <ng-template #content>
+    <div class="empty" *ngIf="roundsWithInterviews().length === 0">
+      No interview rounds yet.
+    </div>
+
+    <div class="round" *ngFor="let r of roundsWithInterviews()">
+      <div class="round-head">
+        <div>
+          <div class="round-title">{{ r.sortOrder }}. {{ r.name }}</div>
+          <div class="round-sub">Status: {{ r.status }}</div>
+        </div>
+
+        <button mat-stroked-button (click)="openSchedule(r)">
+          <mat-icon>event</mat-icon> Schedule
+        </button>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <div class="interviews" *ngIf="r._interviews.length; else none">
+        <mat-card class="interview" *ngFor="let i of r._interviews">
+          <div class="int-head">
+            <div class="when">
+              <div class="dt">{{ i.startsAtUtc | date:'medium' }}</div>
+              <div class="meta">
+                {{ i.mode }} • {{ i.durationMinutes }} min
+                <span *ngIf="i.location"> • {{ i.location }}</span>
+              </div>
+            </div>
+
+            <mat-chip class="chip" [ngClass]="chipStatus(i.status)">
+              {{ i.status }}
+            </mat-chip>
+          </div>
+
+          <div class="link" *ngIf="i.meetingLink">
+            <a [href]="i.meetingLink" target="_blank" rel="noreferrer">Meeting link</a>
+          </div>
+
+          <div class="notes" *ngIf="i.notes">{{ i.notes }}</div>
+
+          <div class="participants" *ngIf="i._participants?.length">
+            <div class="label">Interviewers</div>
+            <div class="chips">
+              <mat-chip class="pchip" *ngFor="let p of i._participants">
+                {{ userName(p.userId) }}
+              </mat-chip>
+            </div>
+          </div>
+
+          <div class="participants" *ngIf="i._feedbacks?.length">
+            <div class="label">Feedback</div>
+            <div class="chips">
+              <mat-chip class="fchip" *ngFor="let f of i._feedbacks">
+                {{ userName(f.reviewerUserId) }} • {{ f.decision }} • {{ f.rating }}/5
+              </mat-chip>
+            </div>
+          </div>
+
+          <div class="int-actions">
+            <button mat-button (click)="openFeedback(i)">
+              <mat-icon>rate_review</mat-icon>
+              Feedback
+            </button>
+
+            <span class="spacer"></span>
+
+            <button mat-button (click)="complete(i)" [disabled]="(i.status || '').toLowerCase() !== 'scheduled'">
+              <mat-icon>done</mat-icon>
+              Complete
+            </button>
+
+            <button mat-button color="warn" (click)="cancel(i)" [disabled]="(i.status || '').toLowerCase() === 'cancelled'">
+              <mat-icon>block</mat-icon>
+              Cancel
+            </button>
+          </div>
+        </mat-card>
+      </div>
+
+      <ng-template #none>
+        <div class="none">
+          No interviews scheduled for this round.
+        </div>
+      </ng-template>
+    </div>
+  </ng-template>
+</mat-card>

@@ -1,0 +1,40 @@
+.card { border-radius: 16px; padding: 14px; }
+
+.header { display:flex; justify-content:space-between; align-items:flex-end; gap:14px; margin-bottom: 10px; }
+.title { font-size: 16px; font-weight: 900; }
+.sub { font-size: 12px; opacity: .7; margin-top: 2px; }
+.actions { display:flex; gap:10px; }
+
+.busy { display:flex; align-items:center; gap:10px; padding: 16px; }
+
+.round { border: 1px solid rgba(0,0,0,.08); border-radius: 14px; padding: 12px; margin-top: 12px; }
+.round-head { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom: 10px; }
+.round-title { font-weight: 850; }
+.round-sub { font-size: 12px; opacity:.7; }
+
+.interviews { display:grid; grid-template-columns: 1fr; gap: 12px; margin-top: 12px; }
+.interview { border-radius: 14px; padding: 12px; }
+
+.int-head { display:flex; justify-content:space-between; align-items:flex-start; gap: 10px; }
+.dt { font-weight: 750; }
+.meta { font-size: 12px; opacity: .75; margin-top: 2px; }
+
+.link { margin-top: 8px; font-size: 13px; }
+.notes { margin-top: 8px; opacity: .9; }
+
+.participants { margin-top: 10px; }
+.label { font-size: 12px; opacity: .7; margin-bottom: 4px; }
+.chips { display:flex; flex-wrap:wrap; gap: 6px; }
+.pchip, .fchip { border-radius: 999px; font-weight: 650; background: rgba(0,0,0,.06); }
+
+.int-actions { display:flex; align-items:center; gap: 8px; margin-top: 10px; }
+.spacer { flex: 1; }
+
+.none { padding: 10px 4px; opacity: .7; }
+.empty { padding: 16px; opacity: .7; }
+
+.chip { border-radius: 999px; font-weight: 700; }
+.chip.scheduled { background: rgba(0, 90, 255, .12); }
+.chip.completed { background: rgba(0, 128, 0, .14); }
+.chip.cancelled { background: rgba(255, 0, 0, .14); }
+.chip.noshow { background: rgba(255, 140, 0, .18); }

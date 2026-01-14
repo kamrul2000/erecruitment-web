@@ -1,0 +1,58 @@
+<h2 mat-dialog-title>Schedule Interview</h2>
+
+<mat-dialog-content [formGroup]="form">
+  <div class="sub">
+    Round: <b>{{ round?.name }}</b>
+  </div>
+
+  <div class="grid">
+    <mat-form-field appearance="outline">
+      <mat-label>Date & Time</mat-label>
+      <input matInput type="datetime-local" formControlName="startsAtLocal" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Duration (minutes)</mat-label>
+      <input matInput type="number" formControlName="durationMinutes" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Mode</mat-label>
+      <mat-select formControlName="mode">
+        <mat-option *ngFor="let m of modes" [value]="m">{{ m }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Location</mat-label>
+      <input matInput formControlName="location" placeholder="Office / Zoom / Google Meet" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full">
+      <mat-label>Meeting Link</mat-label>
+      <input matInput formControlName="meetingLink" placeholder="https://meet.google.com/..." />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full">
+      <mat-label>Interviewers</mat-label>
+      <mat-select formControlName="participantUserIds" multiple>
+        <mat-option *ngFor="let u of users" [value]="u.id">
+          {{ userLabel(u) }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full">
+      <mat-label>Notes</mat-label>
+      <textarea matInput rows="3" formControlName="notes"></textarea>
+    </mat-form-field>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Cancel</button>
+  <button mat-flat-button color="primary" (click)="save()">
+    <mat-icon>event</mat-icon>
+    Schedule
+  </button>
+</mat-dialog-actions>

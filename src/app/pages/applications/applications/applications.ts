@@ -24,7 +24,7 @@ import { environment } from '../../../../environments/environment';
 
 import { StatusDialogComponent } from './../status-dialog/status-dialog';
 import { HistoryDialogComponent } from './../history-dialog/history-dialog';
-
+import { ApplicationDetailsDialogComponent } from '../application-details-dialog/application-details-dialog';
 type SearchResult = { total: number; page: number; pageSize: number; items: any[] };
 
 @Component({
@@ -200,7 +200,13 @@ export class ApplicationsComponent {
     if (!url) return;
     window.open(`${environment.apiBaseUrl}${url}`, '_blank');
   }
-
+openDetails(row: any) {
+  const ref = this.dialog.open(ApplicationDetailsDialogComponent, {
+    width: '1100px',
+    maxWidth: '95vw',
+    data: { application: row }
+  });
+}
   openHistory(row: any) {
     this.appsApi.history(row.applicationId || row.id).subscribe({
       next: (items) => {

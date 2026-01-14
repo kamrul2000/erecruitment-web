@@ -1,0 +1,29 @@
+<h2 mat-dialog-title>Interview Feedback</h2>
+
+    <mat-dialog-content [formGroup]="form">
+      <div style="font-size:12px; opacity:.75; margin-bottom:10px;">
+        Interview: {{ data?.interview?.startsAtUtc | date:'medium' }} • {{ data?.interview?.mode }}
+      </div>
+
+      <mat-form-field appearance="outline" style="width:100%;">
+        <mat-label>Decision</mat-label>
+        <mat-select formControlName="decision">
+          <mat-option *ngFor="let d of decisions" [value]="d">{{ d }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" style="width:100%;">
+        <mat-label>Rating (1-5)</mat-label>
+        <input matInput type="number" formControlName="rating" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" style="width:100%;">
+        <mat-label>Comments</mat-label>
+        <textarea matInput rows="5" formControlName="comments"></textarea>
+      </mat-form-field>
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="end">
+      <button mat-button (click)="close()">Cancel</button>
+      <button mat-flat-button color="primary" (click)="save()" [disabled]="form.invalid">Save</button>
+    </mat-dialog-actions>
