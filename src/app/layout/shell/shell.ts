@@ -53,6 +53,9 @@ export class ShellComponent {
       { label: 'Users', icon: 'group', path: '/users', roles: ['Admin'] },
       { label: 'Settings', icon: 'settings', path: '/settings', roles: ['Admin'] },
       { label: 'Audit Logs', icon: 'receipt_long', path: '/audit-logs', roles: ['Admin'] },
+//super admin only
+      { label: 'Tenants', icon: 'domain', path: '/saas/tenants', roles: ['SuperAdmin'] },
+
 
     ];
 

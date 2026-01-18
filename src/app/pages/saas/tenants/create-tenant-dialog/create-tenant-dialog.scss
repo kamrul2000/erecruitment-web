@@ -1,0 +1,23 @@
+.section-title {
+  font-weight: 850;
+  margin: 10px 0 8px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.full { grid-column: 1 / -1; }
+
+.hint {
+  margin-top: 10px;
+  font-size: 12px;
+  opacity: .75;
+}
+
+@media (max-width: 760px) {
+  .grid { grid-template-columns: 1fr; }
+  .full { grid-column: auto; }
+}

@@ -1,0 +1,105 @@
+<mat-card class="card">
+  <div class="header">
+    <div>
+      <div class="title">Tenants</div>
+      <div class="subtitle">SuperAdmin only • Create tenants and manage status</div>
+    </div>
+
+    <div class="actions">
+      <button mat-stroked-button (click)="load()" [disabled]="loading()">
+        <mat-icon>refresh</mat-icon> Refresh
+      </button>
+      <button mat-flat-button color="primary" (click)="openCreate()">
+        <mat-icon>add</mat-icon> Create Tenant
+      </button>
+    </div>
+  </div>
+
+  <div class="filters" [formGroup]="filterForm">
+    <mat-form-field appearance="outline" class="w360">
+      <mat-label>Search</mat-label>
+      <input matInput formControlName="keyword" placeholder="name or slug..." />
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+  </div>
+
+  <div *ngIf="!loading(); else busy" class="table-wrap">
+    <table mat-table [dataSource]="filtered()" class="table">
+
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef> Tenant </th>
+        <td mat-cell *matCellDef="let r">
+          <div class="cell-main">{{ r.name }}</div>
+          <div class="cell-sub">Id: {{ r.id }}</div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="slug">
+        <th mat-header-cell *matHeaderCellDef> Slug </th>
+        <td mat-cell *matCellDef="let r">
+          <div class="cell-main">{{ r.slug }}</div>
+          <div class="cell-sub">Login uses tenantSlug</div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef> Status </th>
+        <td mat-cell *matCellDef="let r">
+          <mat-chip class="chip" [ngClass]="statusClass(r.isActive)">
+            {{ r.isActive ? 'Active' : 'Disabled' }}
+          </mat-chip>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="stats">
+        <th mat-header-cell *matHeaderCellDef> Stats </th>
+        <td mat-cell *matCellDef="let r">
+          <div class="stats">
+            <mat-chip class="schip" matTooltip="Users">{{ r.users }} Users</mat-chip>
+            <mat-chip class="schip" matTooltip="Jobs">{{ r.jobs }} Jobs</mat-chip>
+            <mat-chip class="schip" matTooltip="Applications">{{ r.applications }} Apps</mat-chip>
+          </div>
+        </td>
+      </ng-container>
+<ng-container matColumnDef="plan">
+  <th mat-header-cell *matHeaderCellDef> Plan </th>
+  <td mat-cell *matCellDef="let r">
+    <mat-chip class="schip">{{ r.plan || 'Free' }}</mat-chip>
+  </td>
+</ng-container>
+
+<ng-container matColumnDef="billing">
+  <th mat-header-cell *matHeaderCellDef> Billing </th>
+  <td mat-cell *matCellDef="let r">
+    <div class="cell-main">{{ r.billingEmail || '—' }}</div>
+  </td>
+</ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef class="actions-col"> Actions </th>
+        <td mat-cell *matCellDef="let r" class="actions-col">
+          <button mat-stroked-button color="warn" *ngIf="r.isActive" (click)="toggleActive(r)">
+            Disable
+          </button>
+          <button mat-stroked-button color="primary" *ngIf="!r.isActive" (click)="toggleActive(r)">
+            Enable
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+
+    <div class="empty" *ngIf="filtered().length === 0">
+      No tenants found.
+    </div>
+  </div>
+
+  <ng-template #busy>
+    <div class="busy">
+      <mat-spinner diameter="32"></mat-spinner>
+      <div>Loading tenants...</div>
+    </div>
+  </ng-template>
+</mat-card>

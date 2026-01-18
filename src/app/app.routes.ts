@@ -5,6 +5,8 @@ export const routes: Routes = [
   { path: 'login', loadComponent: () => import('./pages/auth/login/login').then(m => m.Login) },
   { path: 't/:slug/jobs', loadComponent: () => import('./public/public-jobs/public-jobs').then(m => m.PublicJobsComponent) },
   { path: 't/:slug/jobs/:id', loadComponent: () => import('./public/public-job-details/public-job-details').then(m => m.PublicJobDetailsComponent) },
+{ path: 'saas/tenants', loadComponent: () => import('./pages/saas/tenants/saas-tenants/saas-tenants').then(m => m.SaasTenantsComponent) },
+{ path: 'saas/login', loadComponent: () => import('./pages/auth/superadmin-login/superadmin-login').then(m => m.SuperadminLoginComponent) },
 
   {
     path: '',

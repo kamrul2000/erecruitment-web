@@ -31,4 +31,13 @@ export class AuthService {
   isLoggedIn(): boolean {
     return !!this.storage.getToken();
   }
+  superAdminLogin(payload: { email: string; password: string }) {
+  return this.http.post<any>(`${this.base}/api/Auth/superadmin/login`, payload).pipe(
+    tap(res => {
+      this.storage.setToken(res.accessToken);
+      this.storage.setUser(res.user);
+    })
+  );
+}
+
 }
