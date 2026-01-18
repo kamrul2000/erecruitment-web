@@ -195,11 +195,24 @@ export class ApplicationsComponent {
     return 'submitted';
   }
 
-  openResume(row: any) {
-    const url = row?.resumeUrlSnapshot || row?.resumeUrl;
-    if (!url) return;
-    window.open(`${environment.apiBaseUrl}${url}`, '_blank');
+  //  openResume(candidate: any) {
+  //   // backend stores ResumeUrl like /uploads/{tenantId}/candidates/{id}/file.pdf
+  //   if (!candidate.resumeUrl) return;
+  //       window.open(`${environment.apiBaseUrl}${candidate.resumeUrl}`, '_blank');
+
+  // }
+ openResume(row: any) {
+  const url =
+    row.resumeUrl ;
+  if (!url) {
+    this.snack.open('Resume not available', 'Close', { duration: 2500 });
+    return;
   }
+
+  window.open(`${environment.apiBaseUrl}${url}`, '_blank');
+}
+
+
 openDetails(row: any) {
   const ref = this.dialog.open(ApplicationDetailsDialogComponent, {
     width: '1100px',

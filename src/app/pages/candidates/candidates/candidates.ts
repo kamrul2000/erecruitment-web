@@ -13,6 +13,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { environment } from '../../../../environments/environment';
 
 import { CandidateDialogComponent } from '../candidate-dialog/candidate-dialog';
 
@@ -120,6 +121,7 @@ export class CandidatesComponent {
   openResume(candidate: any) {
     // backend stores ResumeUrl like /uploads/{tenantId}/candidates/{id}/file.pdf
     if (!candidate.resumeUrl) return;
-    window.open(`https://localhost:7289${candidate.resumeUrl}`, '_blank');
+        window.open(`${environment.apiBaseUrl}${candidate.resumeUrl}`, '_blank');
+
   }
 }

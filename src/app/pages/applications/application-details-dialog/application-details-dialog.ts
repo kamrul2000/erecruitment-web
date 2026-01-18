@@ -10,6 +10,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatDividerModule } from '@angular/material/divider';
 
 import { ApplicationInterviewsComponent } from '../application-interviews/application-interviews';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-application-details-dialog',
@@ -29,6 +30,7 @@ import { ApplicationInterviewsComponent } from '../application-interviews/applic
   styleUrls: ['./application-details-dialog.scss']
 })
 export class ApplicationDetailsDialogComponent {
+  [x: string]: any;
   app!: ReturnType<typeof signal<any>>;
 
   constructor(
@@ -44,10 +46,21 @@ export class ApplicationDetailsDialogComponent {
     this.ref.close(changed);
   }
 
-  openResume() {
-    const a = this.app();
-    const url = a.resumeUrlSnapshot || a.resumeUrl;
-    if (!url) return;
-    window.open(url, '_blank');
+  // openResume() {
+  //   const a = this.app();
+  //   const url =a.resumeUrl;
+  //   if (!url) return;
+  //   window.open(url, '_blank');
+  // }
+  openResume(url?: string) {
+  if (!url) {
+    this['snack']?.open?.('Resume not available', 'Close', { duration: 2500 });
+    return;
   }
-}
+
+  const finalUrl = url.startsWith('http')
+    ? url
+    : `${environment.apiBaseUrl}${url}`;
+
+  window.open(finalUrl, '_blank');
+}}

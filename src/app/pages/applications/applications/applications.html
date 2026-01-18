@@ -165,22 +165,29 @@
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef class="actions-col"> Actions </th>
         <td mat-cell *matCellDef="let r" class="actions-col">
-          <button mat-icon-button (click)="changeStatus(r)" matTooltip="Change status">
-            <mat-icon>sync</mat-icon>
-          </button>
+  <div class="actions">
+    <button mat-icon-button (click)="changeStatus(r)" matTooltip="Change status">
+      <mat-icon>sync</mat-icon>
+    </button>
 
-          <button mat-icon-button (click)="openHistory(r)" matTooltip="History">
-            <mat-icon>history</mat-icon>
-          </button>
+    <button mat-icon-button (click)="openHistory(r)" matTooltip="History">
+      <mat-icon>history</mat-icon>
+    </button>
 
-          <button mat-icon-button [disabled]="!(r.resumeUrlSnapshot || r.resumeUrl)" (click)="openResume(r)" matTooltip="Open CV">
-            <mat-icon>description</mat-icon>
-          </button>
-          <button mat-icon-button (click)="openDetails(r)" matTooltip="View details">
-  <mat-icon>visibility</mat-icon>
-</button>
+    <button mat-icon-button
+            [disabled]="!r.resumeUrl"
+            (click)="openResume(r)"
+            matTooltip="Open CV">
+      <mat-icon>description</mat-icon>
+      
+    </button>
 
-        </td>
+    <button mat-icon-button (click)="openDetails(r)" matTooltip="View details">
+      <mat-icon>visibility</mat-icon>
+    </button>
+  </div>
+</td>
+
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
