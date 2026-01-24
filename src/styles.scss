@@ -1,6 +1,7 @@
 @use '@angular/material' as mat;
 
 :root {
+  // Angular Material Theme
   @include mat.theme((
     color: (
       primary: mat.$azure-palette,
@@ -9,9 +10,24 @@
     typography: Roboto,
     density: 0,
   ));
+
+  // Custom Brand Variables
+  --brand-primary: #1976d2;
+  --brand-secondary: #9c27b0;
+  --brand-bg: #ffffff;
+  --brand-font: Inter, system-ui, Arial, sans-serif;
 }
 
 html, body {
   height: 100%;
   margin: 0;
+}
+
+body {
+  background: var(--brand-bg);
+  font-family: var(--brand-font);
+}
+
+a {
+  color: var(--brand-primary);
 }

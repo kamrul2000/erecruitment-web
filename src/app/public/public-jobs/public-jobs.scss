@@ -29,3 +29,34 @@
 
 @media (max-width: 980px) { .grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
+
+:root {
+  --brand-primary: #1976d2;
+  --brand-secondary: #9c27b0;
+  --brand-bg: #ffffff;
+  --brand-font: Inter, system-ui, Arial;
+}
+
+body {
+  background: var(--brand-bg);
+  font-family: var(--brand-font);
+}
+
+.bar {
+  background-color: var(--brand-primary) !important;
+  color: white;
+}
+
+.job {
+  border-top: 4px solid var(--brand-secondary);
+}
+
+button[mat-flat-button] {
+  background-color: var(--brand-primary) !important;
+}
+.bar img.logo {
+  height: 40px;
+  margin-right: 12px;
+  border-radius: 4px;
+  object-fit: contain;
+}

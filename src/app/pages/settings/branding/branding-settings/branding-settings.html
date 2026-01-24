@@ -1,0 +1,147 @@
+<mat-card class="card">
+  <div class="header">
+    <div>
+      <div class="title">Branding / Career Page Theme</div>
+      <div class="sub">Admin can set company branding. Public portal will auto-apply it.</div>
+    </div>
+
+    <div class="actions">
+      <button mat-stroked-button (click)="load()" [disabled]="loading() || saving()">
+        <mat-icon>refresh</mat-icon> Refresh
+      </button>
+      <button mat-stroked-button (click)="resetDefaults()" [disabled]="loading() || saving()">
+        Reset
+      </button>
+      <button mat-flat-button color="primary" (click)="save()" [disabled]="loading() || saving()">
+        <mat-icon>save</mat-icon>
+        Save
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="loading(); else content" class="busy">
+    <mat-spinner diameter="32"></mat-spinner>
+    <div>Loading theme...</div>
+  </div>
+
+  <ng-template #content>
+    <div class="grid" [formGroup]="form">
+      <!-- Left: Settings -->
+      <mat-card class="panel">
+        <div class="panel-title">Settings</div>
+
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Company Name</mat-label>
+          <input matInput formControlName="companyName" />
+        </mat-form-field>
+
+        <div class="row2">
+          <mat-form-field appearance="outline">
+            <mat-label>Template</mat-label>
+            <mat-select formControlName="template">
+              <mat-option *ngFor="let t of templates" [value]="t">{{ t }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Font</mat-label>
+            <mat-select formControlName="fontFamily">
+              <mat-option *ngFor="let f of fonts" [value]="f">{{ f }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="panel-title">Colors</div>
+
+        <div class="row3">
+          <div class="color-field">
+            <label class="clabel">Primary</label>
+            <input type="color" [value]="form.value.primaryColor" (input)="form.patchValue({primaryColor: ($any($event.target).value)})" />
+            <input matInput class="chex" formControlName="primaryColor" />
+          </div>
+
+          <div class="color-field">
+            <label class="clabel">Secondary</label>
+            <input type="color" [value]="form.value.secondaryColor" (input)="form.patchValue({secondaryColor: ($any($event.target).value)})" />
+            <input matInput class="chex" formControlName="secondaryColor" />
+          </div>
+
+          <div class="color-field">
+            <label class="clabel">Background</label>
+            <input type="color" [value]="form.value.backgroundColor" (input)="form.patchValue({backgroundColor: ($any($event.target).value)})" />
+            <input matInput class="chex" formControlName="backgroundColor" />
+          </div>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="panel-title">Logo</div>
+
+        <div class="logo-row">
+          <button mat-stroked-button>
+            <mat-icon>upload</mat-icon>
+            <span>Upload Logo</span>
+            <input class="file" type="file" accept="image/*" (change)="onLogoSelected($event)" />
+          </button>
+
+          <mat-form-field appearance="outline" class="full">
+            <mat-label>Logo URL</mat-label>
+            <input matInput formControlName="logoUrl" />
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Favicon URL (optional)</mat-label>
+          <input matInput formControlName="faviconUrl" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Custom CSS (optional)</mat-label>
+          <textarea matInput rows="5" formControlName="customCss"></textarea>
+        </mat-form-field>
+      </mat-card>
+
+      <!-- Right: Preview -->
+      <mat-card class="panel">
+        <div class="panel-title">Live Preview</div>
+
+        <div class="preview"
+          [style.background]="preview().backgroundColor"
+          [style.fontFamily]="preview().fontFamily">
+
+          <div class="phead">
+            <img *ngIf="preview().logoUrl" class="logo" [src]="preview().logoUrl" alt="logo" />
+            <div>
+              <div class="pname">{{ preview().companyName }}</div>
+              <div class="psub">Careers Portal Preview</div>
+            </div>
+          </div>
+
+          <div class="pcards" [ngClass]="'tpl-' + preview().template">
+            <div class="pcard">
+              <div class="ptitle" [style.color]="preview().primaryColor">Software Engineer</div>
+              <div class="pmeta">Dhaka • Engineering</div>
+
+              <button class="pbtn" [style.background]="preview().primaryColor">Apply Now</button>
+              <button class="pbtn2" [style.borderColor]="preview().secondaryColor" [style.color]="preview().secondaryColor">View Details</button>
+            </div>
+
+            <div class="pcard">
+              <div class="ptitle" [style.color]="preview().primaryColor">UI/UX Designer</div>
+              <div class="pmeta">Remote • Design</div>
+
+              <button class="pbtn" [style.background]="preview().primaryColor">Apply Now</button>
+              <button class="pbtn2" [style.borderColor]="preview().secondaryColor" [style.color]="preview().secondaryColor">View Details</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="hint">
+          Public portal will load this theme using tenantSlug and apply CSS variables automatically.
+        </div>
+      </mat-card>
+    </div>
+  </ng-template>
+</mat-card>

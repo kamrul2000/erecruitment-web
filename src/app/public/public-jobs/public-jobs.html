@@ -1,7 +1,11 @@
-<mat-toolbar color="primary" class="bar">
-  <mat-icon>work</mat-icon>
+<mat-toolbar class="bar">
+  <img *ngIf="logo()" class="logo" [src]="logo()" alt="Company Logo" />
+  
+  <mat-icon *ngIf="!logo()">work</mat-icon>
+
   <span class="title">Careers • {{ slug }}</span>
 </mat-toolbar>
+
 
 <div class="wrap">
   <div *ngIf="loading(); else content" class="busy">

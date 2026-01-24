@@ -7,6 +7,10 @@ export class PublicCareerService {
   private base = environment.apiBaseUrl;
   constructor(private http: HttpClient) {}
 
+ theme(slug: string) {
+  return this.http.get<any>(`${this.base}/api/public/${slug}/theme`);
+}
+
   jobs(slug: string) {
     return this.http.get<any[]>(`${this.base}/api/public/${slug}/jobs/get-all`);
   }

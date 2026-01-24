@@ -12,7 +12,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
-import { PublicCareerService } from '../../core/services/public-career.service';
+import { ThemeService } from '../../../app/core/services/theme.service';
+import { PublicCareerService } from '../../../app/core/services/public-career.service';
 
 @Component({
   selector: 'app-public-job-details',
@@ -48,6 +49,7 @@ export class PublicJobDetailsComponent {
     private route: ActivatedRoute,
     private fb: FormBuilder,
     private api: PublicCareerService,
+    private theme: ThemeService,
     private snack: MatSnackBar
   ) {
     this.form = this.fb.group({
@@ -68,6 +70,15 @@ export class PublicJobDetailsComponent {
   ngOnInit() {
     this.slug = (this.route.snapshot.paramMap.get('slug') || '').toLowerCase();
     this.jobId = this.route.snapshot.paramMap.get('id') || '';
+
+    // ✅ Apply tenant theme for this public page
+    if (this.slug) {
+      this.api.theme(this.slug).subscribe({
+        next: (t) => this.theme.apply(t),
+        error: () => {} // keep defaults
+      });
+    }
+
     this.load();
   }
 
