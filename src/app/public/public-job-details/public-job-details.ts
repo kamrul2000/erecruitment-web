@@ -11,6 +11,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { environment } from '../../../environments/environment';
 
 import { ThemeService } from '../../../app/core/services/theme.service';
 import { PublicCareerService } from '../../../app/core/services/public-career.service';
@@ -42,6 +43,8 @@ export class PublicJobDetailsComponent {
 
   job = signal<any>(null);
   resumeFile = signal<File | null>(null);
+  companyName = signal<string | null>(null);
+  logo = signal<string | null>(null);
 
   form;
 
@@ -71,11 +74,23 @@ export class PublicJobDetailsComponent {
     this.slug = (this.route.snapshot.paramMap.get('slug') || '').toLowerCase();
     this.jobId = this.route.snapshot.paramMap.get('id') || '';
 
-    // ✅ Apply tenant theme for this public page
     if (this.slug) {
       this.api.theme(this.slug).subscribe({
-        next: (t) => this.theme.apply(t),
-        error: () => {} // keep defaults
+        next: (t) => {
+          this.theme.apply(t);
+
+          const logoPath = t?.logoUrl || null;
+          if (logoPath) {
+            const isAbsolute = /^https?:\/\//i.test(logoPath);
+            const fullUrl = isAbsolute ? logoPath : `${environment.apiBaseUrl}${logoPath}`;
+            this.logo.set(fullUrl);
+          } else {
+            this.logo.set(null);
+          }
+
+          this.companyName.set(t?.companyName ?? null);
+        },
+        error: () => {}
       });
     }
 

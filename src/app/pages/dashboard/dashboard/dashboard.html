@@ -1,1 +1,88 @@
-<p>dashboard works!</p>
+<mat-card class="card">
+  <div class="header">
+    <div>
+      <div class="title">Dashboard</div>
+      <div class="subtitle">Overview of candidates, jobs and applications</div>
+    </div>
+
+    <button mat-stroked-button color="primary" class="refresh" (click)="reload()">
+      <mat-icon>refresh</mat-icon>
+      Refresh
+    </button>
+  </div>
+
+  <div class="busy" *ngIf="metricsLoading(); else loaded">
+    <mat-spinner diameter="32"></mat-spinner>
+    <div>Loading dashboard...</div>
+  </div>
+
+  <ng-template #loaded>
+    <div class="error" *ngIf="metricsError(); else content">
+      <mat-icon>error_outline</mat-icon>
+      <span>{{ metricsError() }}</span>
+      <button mat-button color="primary" (click)="reload()">Try again</button>
+    </div>
+
+    <ng-template #content>
+      <div class="grid primary">
+        <div class="stat">
+          <div class="stat-label">Candidates</div>
+          <div class="stat-value">{{ candidatesCount() | number }}</div>
+          <div class="stat-caption">Profiles in your talent pool</div>
+        </div>
+
+        <div class="stat">
+          <div class="stat-label">Open positions</div>
+          <div class="stat-value">{{ jobsOpen() | number }}</div>
+          <div class="stat-caption">{{ jobsTotal() | number }} total roles</div>
+        </div>
+
+        <div class="stat">
+          <div class="stat-label">Applications</div>
+          <div class="stat-value">{{ applicationsTotal() | number }}</div>
+          <div class="stat-caption">All time submitted</div>
+        </div>
+
+        <div class="stat">
+          <div class="stat-label">Hires</div>
+          <div class="stat-value">{{ hiresCount() | number }}</div>
+          <div class="stat-caption">Applications marked Hired</div>
+        </div>
+      </div>
+
+      <div class="grid secondary">
+        <div class="panel">
+          <div class="panel-title">Jobs by status</div>
+          <div class="panel-body">
+            <div class="chip-row">
+              <span class="chip-label">Draft</span>
+              <span class="chip-value">{{ jobsDraft() | number }}</span>
+            </div>
+            <div class="chip-row">
+              <span class="chip-label">Published</span>
+              <span class="chip-value">{{ jobsOpen() | number }}</span>
+            </div>
+            <div class="chip-row">
+              <span class="chip-label">Closed</span>
+              <span class="chip-value">{{ jobsClosed() | number }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">Applications snapshot</div>
+          <div class="panel-body">
+            <div class="chip-row">
+              <span class="chip-label">Total applications</span>
+              <span class="chip-value">{{ applicationsTotal() | number }}</span>
+            </div>
+            <div class="chip-row">
+              <span class="chip-label">Hired</span>
+              <span class="chip-value">{{ hiresCount() | number }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </ng-template>
+</mat-card>

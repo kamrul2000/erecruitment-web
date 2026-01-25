@@ -77,11 +77,17 @@ export class AuditLogsComponent {
     this.loading.set(true);
 
     const v = this.form.getRawValue();
-    const query = {
-      ...v,
-      page: this.page(),
-      pageSize: this.pageSize()
-    };
+    const body: any = {};
+
+    Object.entries(v).forEach(([k, val]) => {
+      if (val === null || val === undefined || val === '') return;
+      body[k] = val;
+    });
+
+    body.page = this.page();
+    body.pageSize = this.pageSize();
+
+    const query = body;
 
     this.api.search(query).subscribe({
       next: (res) => {
@@ -110,14 +116,30 @@ export class AuditLogsComponent {
   }
 
   openDetails(row: any) {
-    this.api.getById(row.id).subscribe({
+    const id = row.id;
+
+    if (!id) {
+      this.dialog.open(AuditDetailsDialogComponent, {
+        width: '860px',
+        data: row
+      });
+      return;
+    }
+
+    this.api.getById(id).subscribe({
       next: (detail) => {
         this.dialog.open(AuditDetailsDialogComponent, {
           width: '860px',
           data: detail
         });
       },
-      error: () => this.snack.open('Failed to load details', 'Close', { duration: 3000 })
+      error: () => {
+        this.snack.open('Failed to load details', 'Close', { duration: 3000 });
+        this.dialog.open(AuditDetailsDialogComponent, {
+          width: '860px',
+          data: row
+        });
+      }
     });
   }
 }

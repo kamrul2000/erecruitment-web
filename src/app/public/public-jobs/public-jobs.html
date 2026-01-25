@@ -1,37 +1,105 @@
-<mat-toolbar class="bar">
-  <img *ngIf="logo()" class="logo" [src]="logo()" alt="Company Logo" />
-  
-  <mat-icon *ngIf="!logo()">work</mat-icon>
+<div class="public-jobs">
+  <header class="public-jobs__header" role="banner">
+    <mat-toolbar class="public-jobs__toolbar">
+      <div class="public-jobs__brand">
+        <img
+          *ngIf="logo()"
+          class="public-jobs__logo"
+          [src]="logo()"
+          [alt]="companyName() || 'Company logo'"
+        />
 
-  <span class="title">Careers • {{ slug }}</span>
-</mat-toolbar>
+        <div class="public-jobs__brand-fallback" *ngIf="!logo()" aria-hidden="true">
+          <mat-icon>work</mat-icon>
+        </div>
 
+        <div class="public-jobs__brand-text">
+          <div class="public-jobs__company">
+            {{ companyName() || slug }}
+          </div>
+          <div class="public-jobs__tagline">
+            Career opportunities
+          </div>
+        </div>
+      </div>
+    </mat-toolbar>
+  </header>
 
-<div class="wrap">
-  <div *ngIf="loading(); else content" class="busy">
-    <mat-spinner diameter="34"></mat-spinner>
-    <div>Loading jobs...</div>
-  </div>
+  <main class="public-jobs__main" role="main">
+    <section class="public-jobs__intro">
+      <h1 class="public-jobs__title">
+        Explore open roles
+      </h1>
+      <p class="public-jobs__subtitle">
+        Discover opportunities aligned with your skills and ambitions.
+      </p>
+    </section>
 
-  <ng-template #content>
-    <div class="grid" *ngIf="jobs().length; else empty">
-      <mat-card class="job" *ngFor="let j of jobs()">
-        <div class="job-title">{{ j.title }}</div>
-        <div class="meta">{{ j.department }} • {{ j.location || '—' }}</div>
+    <section class="public-jobs__filters" aria-label="Job filters">
+      <div class="public-jobs__filters-summary">
+        <span class="public-jobs__badge" *ngIf="jobs().length">
+          {{ jobs().length }} open {{ jobs().length === 1 ? 'role' : 'roles' }}
+        </span>
+        <span class="public-jobs__filters-text">
+          Showing all published positions.
+        </span>
+      </div>
+    </section>
 
-        <div class="desc">{{ j.description || '' }}</div>
+    <section class="public-jobs__content" aria-label="Job listings">
+      <div
+        *ngIf="loading(); else content"
+        class="public-jobs__loading"
+        role="status"
+        aria-live="polite"
+      >
+        <mat-spinner diameter="34"></mat-spinner>
+        <div class="public-jobs__loading-text">Loading jobs…</div>
+      </div>
 
-        <button mat-flat-button color="primary" (click)="open(j)">
-          Apply
-          <mat-icon>arrow_forward</mat-icon>
-        </button>
-      </mat-card>
-    </div>
+      <ng-template #content>
+        <div class="public-jobs__list" *ngIf="jobs().length; else empty">
+          <mat-card class="public-jobs__card" *ngFor="let j of jobs()">
+            <div class="public-jobs__card-header">
+              <h2 class="public-jobs__card-title">{{ j.title }}</h2>
+              <div class="public-jobs__card-meta">
+                {{ j.department }} • {{ j.location || '—' }}
+              </div>
+            </div>
 
-    <ng-template #empty>
-      <mat-card class="empty">
-        No published jobs right now.
-      </mat-card>
-    </ng-template>
-  </ng-template>
+            <p class="public-jobs__card-description">
+              {{ j.description || '' }}
+            </p>
+
+            <div class="public-jobs__card-actions">
+              <button
+                mat-flat-button
+                color="primary"
+                class="public-jobs__primary-action"
+                (click)="open(j)"
+              >
+                Apply
+                <mat-icon>arrow_forward</mat-icon>
+              </button>
+            </div>
+          </mat-card>
+        </div>
+
+        <ng-template #empty>
+          <mat-card class="public-jobs__empty" role="status" aria-live="polite">
+            <div class="public-jobs__empty-title">No published jobs right now</div>
+            <p class="public-jobs__empty-text">
+              Please check back soon—new opportunities are added regularly.
+            </p>
+          </mat-card>
+        </ng-template>
+      </ng-template>
+    </section>
+
+    <footer class="public-jobs__footer" aria-label="Careers footer">
+      <p class="public-jobs__footer-text">
+        Powered by our E-recruitment platform.
+      </p>
+    </footer>
+  </main>
 </div>

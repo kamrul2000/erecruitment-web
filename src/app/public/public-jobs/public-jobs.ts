@@ -32,6 +32,7 @@ export class PublicJobsComponent {
   loading = signal(false);
   jobs = signal<any[]>([]);
   logo = signal<string | null>(null);
+  companyName = signal<string | null>(null);
 
   constructor(
     private route: ActivatedRoute,
@@ -48,21 +49,27 @@ export class PublicJobsComponent {
     }
 
     this.api.theme(this.slug).subscribe({
-    next: (t) => {
-      this.theme.apply(t);
+      next: (t) => {
+        this.theme.apply(t);
 
-      // Fix logo URL by prepending backend base
-      if (t?.logoUrl) {
-this.logo.set(`${environment.apiBaseUrl}${t.logoUrl}`);
-      } else {
+        const logoPath = t?.logoUrl || null;
+        if (logoPath) {
+          const isAbsolute = /^https?:\/\//i.test(logoPath);
+          const fullUrl = isAbsolute ? logoPath : `${environment.apiBaseUrl}${logoPath}`;
+          this.logo.set(fullUrl);
+        } else {
+          this.logo.set(null);
+        }
+
+        this.companyName.set(t?.companyName ?? null);
+      },
+      error: () => {
         this.logo.set(null);
       }
-    },
-    error: () => this.logo.set(null)
-  });
+    });
 
-  this.load();
-}
+    this.load();
+  }
 
   load() {
     this.loading.set(true);
