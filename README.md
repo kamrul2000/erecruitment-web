@@ -1,59 +1,130 @@
-# ErecruitmentWeb
+# E-Recruitment Platform (Multi-Tenant SaaS)
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.4.
 
-## Development server
+A multi-tenant SaaS recruitment management platform that manages the full hiring lifecycle — from job posting and candidate applications to interview scheduling and hiring decisions.
+## The platform includes:
 
-To start a local development server, run:
+- Admin recruitment dashboard
 
-```bash
-ng serve
-```
+- Multi-tenant architecture
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+- Candidate management
 
-## Code scaffolding
+- Job pipeline tracking
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+- Interview scheduling
 
-```bash
-ng generate component component-name
-```
+- Public career portal for applicants
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## 📌 Key Features
+🏢 Multi-Tenant SaaS Architecture
 
-```bash
-ng generate --help
-```
+- Tenant-based data isolation
 
-## Building
+- SuperAdmin tenant management
 
-To build the project run:
+- Tenant branding and theme configuration
 
-```bash
-ng build
-```
+- Tenant-specific career portal
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+👥 Candidate Management
 
-## Running unit tests
+- Candidate profiles
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+- Resume upload and storage
 
-```bash
-ng test
-```
+- Experience and salary tracking
+  
+💼 Job Management
 
-## Running end-to-end tests
+Create and manage job postings
 
-For end-to-end (e2e) testing, run:
+Status lifecycle:
 
-```bash
-ng e2e
-```
+- Draft
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+- Published
 
-## Additional Resources
+- Closed
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+📊 Application Pipeline
+
+- Application tracking
+
+- Configurable pipeline stages
+
+- Status history tracking
+
+- Filtering and search
+
+🎤 Interview Management
+
+- Interview rounds
+
+- Scheduling
+
+- Interview participants
+
+- Interview feedback and ratings
+
+🌐 Public Career Portal
+
+- Public job listings
+
+- Candidate application form
+
+- Resume upload
+
+- Tenant-based branding
+
+🔐 Security
+
+- JWT authentication
+
+- Role-based access control
+
+Roles:
+
+- SuperAdmin
+
+- Admin
+
+- Recruiter
+
+- HiringManager
+
+📜 Audit Logs
+
+Tracks system activities such as:
+
+- Job changes
+
+- Application updates
+
+- Status transitions
+
+- User actions
+
+
+## 🏗 System Architecture
+Angular SPA (Admin Dashboard)
+        │
+        │ REST API
+        ▼
+ASP.NET Core Web API
+        │
+        │ Entity Framework Core
+        ▼
+SQL Server Database
+
+
+Additional Components
+
+Public Career Portal
+        │
+        ▼
+ASP.NET API
+        │
+        ▼
+Resume Storage (wwwroot/uploads)
+
