@@ -29,7 +29,21 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    return !!this.storage.getToken();
+    const token = this.storage.getToken();
+    if (!token) return false;
+
+    // Validate JWT exp claim. If missing or expired, drop the stale token.
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const expSeconds = payload?.exp;
+      if (typeof expSeconds === 'number' && expSeconds * 1000 > Date.now()) {
+        return true;
+      }
+    } catch {
+      // malformed token — fall through to clear
+    }
+    this.storage.clear();
+    return false;
   }
   superAdminLogin(payload: { email: string; password: string }) {
   return this.http.post<any>(`${this.base}/api/Auth/superadmin/login`, payload).pipe(

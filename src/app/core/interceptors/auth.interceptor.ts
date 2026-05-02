@@ -1,30 +1,33 @@
-import { HttpInterceptorFn } from '@angular/common/http';
+import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
+import { Router } from '@angular/router';
+import { catchError, throwError } from 'rxjs';
 import { AuthStorageService } from '../services/auth-storage.service';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const storage = inject(AuthStorageService);
+  const router = inject(Router);
   const token = storage.getToken();
 
-  // Convert URL to lowercase for safe comparison
   const url = req.url.toLowerCase();
+  const isPublic = url.includes('/api/public/');
+  const isLogin = url.includes('/api/auth/login') || url.includes('/api/auth/superadmin/login');
 
-  // ✅ Skip Authorization for public APIs
-  if (url.includes('/api/public/')) {
-    return next(req);
-  }
+  const outgoing = token && !isPublic
+    ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } })
+    : req;
 
-  // If no token, continue without modifying request
-  if (!token) {
-    return next(req);
-  }
-
-  // Clone request and attach Authorization header
-  const cloned = req.clone({
-    setHeaders: {
-      Authorization: `Bearer ${token}`
-    }
-  });
-
-  return next(cloned);
+  return next(outgoing).pipe(
+    catchError((err: HttpErrorResponse) => {
+      // 401 on a non-login request: token is missing/expired/invalid.
+      // Clear stale state and bounce to login. Skip on the login call itself
+      // so the form can show "invalid credentials" instead of redirecting.
+      if (err.status === 401 && !isLogin && !isPublic) {
+        storage.clear();
+        const isSuperAdminPath = router.url.startsWith('/saas');
+        router.navigate([isSuperAdminPath ? '/saas/login' : '/login']);
+      }
+      return throwError(() => err);
+    })
+  );
 };
