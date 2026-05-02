@@ -2,6 +2,7 @@ import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { Title } from '@angular/platform-browser';
 
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCardModule } from '@angular/material/card';
@@ -15,6 +16,14 @@ import { environment } from '../../../environments/environment';
 
 import { ThemeService } from '../../../app/core/services/theme.service';
 import { PublicCareerService } from '../../../app/core/services/public-career.service';
+
+const MAX_RESUME_BYTES = 10 * 1024 * 1024;
+const ALLOWED_RESUME_EXTS = ['pdf', 'doc', 'docx'];
+const ALLOWED_RESUME_MIME = [
+  'application/pdf',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+];
 
 @Component({
   selector: 'app-public-job-details',
@@ -40,6 +49,10 @@ export class PublicJobDetailsComponent {
   jobId = '';
   loading = signal(false);
   submitting = signal(false);
+  notFound = signal(false);
+  submitted = signal(false);
+  referenceCode = signal<string | null>(null);
+  resumeError = signal<string | null>(null);
 
   job = signal<any>(null);
   resumeFile = signal<File | null>(null);
@@ -53,7 +66,8 @@ export class PublicJobDetailsComponent {
     private fb: FormBuilder,
     private api: PublicCareerService,
     private theme: ThemeService,
-    private snack: MatSnackBar
+    private snack: MatSnackBar,
+    private title: Title
   ) {
     this.form = this.fb.group({
       fullName: ['', [Validators.required]],
@@ -88,7 +102,9 @@ export class PublicJobDetailsComponent {
             this.logo.set(null);
           }
 
-          this.companyName.set(t?.companyName ?? null);
+          const company = t?.companyName ?? null;
+          this.companyName.set(company);
+          this.title.setTitle(company ? `Apply — ${company}` : 'Apply');
         },
         error: () => {}
       });
@@ -103,17 +119,45 @@ export class PublicJobDetailsComponent {
       next: (res) => {
         this.job.set(res);
         this.loading.set(false);
+        const job = res;
+        const company = this.companyName();
+        if (job?.title) {
+          this.title.setTitle(company ? `${job.title} — ${company}` : job.title);
+        }
       },
       error: () => {
         this.loading.set(false);
-        this.snack.open('Job not found', 'Close', { duration: 3000 });
+        this.notFound.set(true);
       }
     });
   }
 
   pickFile(ev: any) {
     const file = ev?.target?.files?.[0] as File | undefined;
-    this.resumeFile.set(file ?? null);
+    this.resumeError.set(null);
+
+    if (!file) {
+      this.resumeFile.set(null);
+      return;
+    }
+
+    const ext = (file.name.split('.').pop() || '').toLowerCase();
+    const mime = (file.type || '').toLowerCase();
+
+    if (!ALLOWED_RESUME_EXTS.includes(ext) ||
+        (mime && !ALLOWED_RESUME_MIME.includes(mime))) {
+      this.resumeError.set('Only PDF, DOC, and DOCX files are accepted.');
+      this.resumeFile.set(null);
+      return;
+    }
+
+    if (file.size > MAX_RESUME_BYTES) {
+      this.resumeError.set('File is too large. Max size is 10 MB.');
+      this.resumeFile.set(null);
+      return;
+    }
+
+    this.resumeFile.set(file);
   }
 
   submit() {
@@ -122,7 +166,7 @@ export class PublicJobDetailsComponent {
       return;
     }
     if (!this.resumeFile()) {
-      this.snack.open('Please upload your CV (pdf/doc/docx)', 'Close', { duration: 3000 });
+      this.resumeError.set('Please upload your CV (pdf/doc/docx).');
       return;
     }
 
@@ -138,17 +182,28 @@ export class PublicJobDetailsComponent {
 
     this.submitting.set(true);
     this.api.apply(this.slug, this.jobId, fd).subscribe({
-      next: () => {
+      next: (res) => {
         this.submitting.set(false);
-        this.snack.open('Application submitted successfully', 'Close', { duration: 3500 });
+        this.referenceCode.set(res?.referenceCode ?? null);
+        this.submitted.set(true);
         this.form.reset({ salaryCurrency: 'BDT' });
         this.resumeFile.set(null);
+        this.resumeError.set(null);
       },
       error: (err) => {
         this.submitting.set(false);
-        const msg = typeof err?.error === 'string' ? err.error : 'Submit failed';
+        const body = err?.error;
+        const msg =
+          (body && typeof body === 'object' && body.error) ? body.error :
+          typeof body === 'string' ? body :
+          'Submit failed';
         this.snack.open(msg, 'Close', { duration: 4000 });
       }
     });
+  }
+
+  applyAgain() {
+    this.submitted.set(false);
+    this.referenceCode.set(null);
   }
 }

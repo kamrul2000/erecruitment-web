@@ -48,7 +48,7 @@
 
     <section class="public-jobs__content" aria-label="Job listings">
       <div
-        *ngIf="loading(); else content"
+        *ngIf="loading(); else loaded"
         class="public-jobs__loading"
         role="status"
         aria-live="polite"
@@ -56,6 +56,16 @@
         <mat-spinner diameter="34"></mat-spinner>
         <div class="public-jobs__loading-text">Loading jobs…</div>
       </div>
+
+      <ng-template #loaded>
+        <mat-card *ngIf="notFound(); else content" class="public-jobs__empty" role="status">
+          <div class="public-jobs__empty-title">Careers page not available</div>
+          <p class="public-jobs__empty-text">
+            We couldn't find a careers page at this address. The link may be incorrect or the
+            organization may not be accepting applications right now.
+          </p>
+        </mat-card>
+      </ng-template>
 
       <ng-template #content>
         <div class="public-jobs__list" *ngIf="jobs().length; else empty">

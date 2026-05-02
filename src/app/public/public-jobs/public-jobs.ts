@@ -1,6 +1,8 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { Title } from '@angular/platform-browser';
+import { forkJoin } from 'rxjs';
 
 import { ThemeService } from '../../../app/core/services/theme.service';
 import { PublicCareerService } from '../../../app/core/services/public-career.service';
@@ -29,7 +31,8 @@ import { environment } from '../../../environments/environment';
 })
 export class PublicJobsComponent {
   slug = '';
-  loading = signal(false);
+  loading = signal(true);
+  notFound = signal(false);
   jobs = signal<any[]>([]);
   logo = signal<string | null>(null);
   companyName = signal<string | null>(null);
@@ -38,49 +41,46 @@ export class PublicJobsComponent {
     private route: ActivatedRoute,
     private api: PublicCareerService,
     private theme: ThemeService,
-    private router: Router
+    private router: Router,
+    private title: Title
   ) {}
 
   ngOnInit() {
     this.slug = (this.route.snapshot.paramMap.get('slug') || '').toLowerCase();
 
     if (!this.slug) {
+      this.notFound.set(true);
+      this.loading.set(false);
       return;
     }
 
-    this.api.theme(this.slug).subscribe({
-      next: (t) => {
-        this.theme.apply(t);
+    // Theme + jobs in parallel — show "not found" if either endpoint returns 404
+    // (e.g. unknown slug or disabled tenant). The two calls are independent so we
+    // start them together rather than serially.
+    forkJoin({
+      theme: this.api.theme(this.slug),
+      jobs: this.api.jobs(this.slug)
+    }).subscribe({
+      next: ({ theme, jobs }) => {
+        this.theme.apply(theme);
 
-        const logoPath = t?.logoUrl || null;
+        const logoPath = theme?.logoUrl || null;
         if (logoPath) {
           const isAbsolute = /^https?:\/\//i.test(logoPath);
-          const fullUrl = isAbsolute ? logoPath : `${environment.apiBaseUrl}${logoPath}`;
-          this.logo.set(fullUrl);
-        } else {
-          this.logo.set(null);
+          this.logo.set(isAbsolute ? logoPath : `${environment.apiBaseUrl}${logoPath}`);
         }
 
-        this.companyName.set(t?.companyName ?? null);
-      },
-      error: () => {
-        this.logo.set(null);
-      }
-    });
+        const company = theme?.companyName ?? null;
+        this.companyName.set(company);
+        this.title.setTitle(company ? `Careers at ${company}` : 'Careers');
 
-    this.load();
-  }
-
-  load() {
-    this.loading.set(true);
-    this.api.jobs(this.slug).subscribe({
-      next: (res) => {
-        this.jobs.set(res ?? []);
+        this.jobs.set(jobs ?? []);
         this.loading.set(false);
       },
       error: () => {
+        this.notFound.set(true);
         this.loading.set(false);
-        this.jobs.set([]);
+        this.title.setTitle('Careers — not available');
       }
     });
   }
