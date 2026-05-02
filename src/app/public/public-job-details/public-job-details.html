@@ -45,7 +45,42 @@
       </div>
 
       <ng-template #content>
-        <div class="public-job-details__layout" *ngIf="job() as j">
+        <mat-card *ngIf="notFound()" class="public-job-details__card public-job-details__not-found" role="status">
+          <div class="public-job-details__form-title">Job not available</div>
+          <p>
+            This job is no longer accepting applications. It may have been closed or the link is incorrect.
+          </p>
+          <a mat-stroked-button color="primary" [routerLink]="['/t', slug, 'jobs']">
+            <mat-icon>arrow_back</mat-icon>
+            Back to all jobs
+          </a>
+        </mat-card>
+
+        <mat-card *ngIf="submitted()" class="public-job-details__card public-job-details__success" role="status" aria-live="polite">
+          <div class="public-job-details__form-title">
+            <mat-icon color="primary">check_circle</mat-icon>
+            Application submitted
+          </div>
+          <p>
+            Thanks{{ companyName() ? ', ' + companyName() + ' team' : '' }} will review your application shortly.
+          </p>
+          <p *ngIf="referenceCode()">
+            <strong>Reference:</strong> {{ referenceCode() }}
+            <br />
+            <small>Keep this code in case you contact us about your application.</small>
+          </p>
+          <div class="public-job-details__actions">
+            <a mat-stroked-button [routerLink]="['/t', slug, 'jobs']">
+              <mat-icon>arrow_back</mat-icon>
+              Back to all jobs
+            </a>
+            <button mat-stroked-button color="primary" type="button" (click)="applyAgain()">
+              Apply for another role
+            </button>
+          </div>
+        </mat-card>
+
+        <div class="public-job-details__layout" *ngIf="job() as j" [hidden]="submitted() || notFound()">
           <div class="public-job-details__left">
             <mat-card class="public-job-details__card public-job-details__card--job">
               <div class="public-job-details__job-title">{{ j.title }}</div>
@@ -130,13 +165,16 @@
                   <input
                     type="file"
                     (change)="pickFile($event)"
-                    accept=".pdf,.doc,.docx"
+                    accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                   />
                   <span>
                     <mat-icon>upload</mat-icon>
-                    {{ resumeFile()?.name || 'Upload CV (pdf/doc/docx)' }}
+                    {{ resumeFile()?.name || 'Upload CV (pdf/doc/docx, max 10 MB)' }}
                   </span>
                 </label>
+                <div *ngIf="resumeError()" class="public-job-details__file-error" role="alert">
+                  {{ resumeError() }}
+                </div>
               </div>
 
               <mat-form-field

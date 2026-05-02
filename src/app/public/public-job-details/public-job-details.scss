@@ -323,3 +323,34 @@
     grid-column: auto;
   }
 }
+
+.public-job-details__file-error {
+  margin-top: var(--details-space-xs);
+  color: #b00020;
+  font-size: var(--details-font-size-sm);
+}
+
+.public-job-details__success,
+.public-job-details__not-found {
+  max-width: 640px;
+  margin: var(--details-space-xl) auto;
+  padding: var(--details-space-xl);
+
+  .public-job-details__form-title {
+    display: flex;
+    align-items: center;
+    gap: var(--details-space-sm);
+  }
+
+  p {
+    color: var(--details-color-text-muted);
+    line-height: var(--details-line-height-normal);
+  }
+
+  .public-job-details__actions {
+    margin-top: var(--details-space-lg);
+    display: flex;
+    gap: var(--details-space-sm);
+    flex-wrap: wrap;
+  }
+}
