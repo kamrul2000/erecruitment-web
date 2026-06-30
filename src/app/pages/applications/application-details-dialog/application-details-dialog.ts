@@ -12,6 +12,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { ApplicationInterviewsComponent } from '../application-interviews/application-interviews';
 import { ApplicationOffersComponent } from '../application-offers/application-offers';
 import { ApplicationCommunicationComponent } from '../application-communication/application-communication';
+import { ApplicationNotesComponent } from '../application-notes/application-notes';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { CandidatesService } from '../../../core/services/candidates.service';
 import { openBlobInWindow } from '../../../core/utils/file-open';
@@ -31,7 +32,8 @@ import { openBlobInWindow } from '../../../core/utils/file-open';
     MatSnackBarModule,
     ApplicationInterviewsComponent,
     ApplicationOffersComponent,
-    ApplicationCommunicationComponent
+    ApplicationCommunicationComponent,
+    ApplicationNotesComponent
   ],
   templateUrl: './application-details-dialog.html',
   styleUrls: ['./application-details-dialog.scss']

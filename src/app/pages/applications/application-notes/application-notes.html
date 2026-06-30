@@ -1,0 +1,97 @@
+<div class="notes-wrap">
+  <div class="notes-head">
+    <div class="h">Notes &amp; Scorecards</div>
+    <div class="head-actions" *ngIf="!showForm()">
+      <button mat-stroked-button (click)="newNote()">
+        <mat-icon>sticky_note_2</mat-icon>
+        Add note
+      </button>
+      <button mat-flat-button color="primary" (click)="newScorecard()">
+        <mat-icon>grading</mat-icon>
+        Add scorecard
+      </button>
+    </div>
+  </div>
+
+  <!-- compose -->
+  <mat-card class="form-card" *ngIf="showForm()">
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="row" *ngIf="kind() === 'Scorecard'">
+        <mat-form-field appearance="outline" class="score-field">
+          <mat-label>Technical</mat-label>
+          <mat-select formControlName="technicalScore">
+            <mat-option [value]="null">—</mat-option>
+            <mat-option *ngFor="let s of scores" [value]="s">{{ s }}/5</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="score-field">
+          <mat-label>Communication</mat-label>
+          <mat-select formControlName="communicationScore">
+            <mat-option [value]="null">—</mat-option>
+            <mat-option *ngFor="let s of scores" [value]="s">{{ s }}/5</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="score-field">
+          <mat-label>Culture fit</mat-label>
+          <mat-select formControlName="cultureFitScore">
+            <mat-option [value]="null">—</mat-option>
+            <mat-option *ngFor="let s of scores" [value]="s">{{ s }}/5</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="score-field">
+          <mat-label>Recommendation</mat-label>
+          <mat-select formControlName="recommendation">
+            <mat-option [value]="null">—</mat-option>
+            <mat-option *ngFor="let r of recommendations" [value]="r">{{ recLabel(r) }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline" class="grow">
+        <mat-label>{{ kind() === 'Scorecard' ? 'Assessment summary' : 'Note' }}</mat-label>
+        <textarea matInput rows="4" formControlName="body"></textarea>
+      </mat-form-field>
+
+      <div class="form-actions">
+        <button mat-button type="button" (click)="cancelForm()">Cancel</button>
+        <button mat-flat-button color="primary" type="submit" [disabled]="saving()">
+          {{ kind() === 'Scorecard' ? 'Save scorecard' : 'Save note' }}
+        </button>
+      </div>
+    </form>
+  </mat-card>
+
+  <div class="busy" *ngIf="loading()">
+    <mat-spinner diameter="28"></mat-spinner>
+  </div>
+
+  <div class="empty" *ngIf="!loading() && notes().length === 0 && !showForm()">
+    No notes or scorecards yet.
+  </div>
+
+  <mat-card class="note-card" *ngFor="let n of notes()">
+    <div class="note-top">
+      <div>
+        <mat-chip [ngClass]="kindChip(n.kind)">{{ n.kind }}</mat-chip>
+        <span class="who"> {{ n.authorEmail || 'Unknown' }} • {{ n.createdAt | date:'medium' }}</span>
+      </div>
+      <button mat-icon-button color="warn" (click)="remove(n)" matTooltip="Delete">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+
+    <div class="body">{{ n.body }}</div>
+
+    <div *ngIf="n.kind === 'Scorecard'">
+      <div class="scores">
+        <span *ngIf="n.technicalScore != null"><b>Technical</b> {{ n.technicalScore }}/5</span>
+        <span *ngIf="n.communicationScore != null"><b>Communication</b> {{ n.communicationScore }}/5</span>
+        <span *ngIf="n.cultureFitScore != null"><b>Culture fit</b> {{ n.cultureFitScore }}/5</span>
+        <span *ngIf="avg(n)"><b>Avg</b> {{ avg(n) }}/5</span>
+      </div>
+      <div class="rec" *ngIf="n.recommendation">
+        <mat-chip [ngClass]="recChip(n.recommendation)">{{ recLabel(n.recommendation) }}</mat-chip>
+      </div>
+    </div>
+  </mat-card>
+</div>
