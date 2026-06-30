@@ -8,7 +8,7 @@
     <div class="actions">
       <mat-form-field appearance="outline" class="search">
         <mat-label>Search</mat-label>
-        <input matInput (input)="search.set(($any($event.target)).value)" placeholder="title, dept, status..." />
+        <input matInput (input)="onSearch($any($event.target).value)" placeholder="title, dept, status..." />
         <mat-icon matSuffix>search</mat-icon>
       </mat-form-field>
 
@@ -75,6 +75,14 @@
     <div class="empty" *ngIf="filtered().length === 0">
       No jobs found.
     </div>
+
+    <mat-paginator
+      [length]="total()"
+      [pageSize]="pageSize()"
+      [pageIndex]="pageIndex()"
+      [pageSizeOptions]="[10, 20, 50, 100]"
+      (page)="onPage($event)">
+    </mat-paginator>
   </div>
 
   <ng-template #busy>

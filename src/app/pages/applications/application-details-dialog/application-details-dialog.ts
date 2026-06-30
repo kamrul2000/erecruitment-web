@@ -10,7 +10,9 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatDividerModule } from '@angular/material/divider';
 
 import { ApplicationInterviewsComponent } from '../application-interviews/application-interviews';
-import { environment } from '../../../../environments/environment';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { CandidatesService } from '../../../core/services/candidates.service';
+import { openBlobInWindow } from '../../../core/utils/file-open';
 
 @Component({
   selector: 'app-application-details-dialog',
@@ -24,6 +26,7 @@ import { environment } from '../../../../environments/environment';
     MatIconModule,
     MatChipsModule,
     MatDividerModule,
+    MatSnackBarModule,
     ApplicationInterviewsComponent
   ],
   templateUrl: './application-details-dialog.html',
@@ -35,7 +38,9 @@ export class ApplicationDetailsDialogComponent {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private ref: MatDialogRef<ApplicationDetailsDialogComponent>
+    private ref: MatDialogRef<ApplicationDetailsDialogComponent>,
+    private candidatesApi: CandidatesService,
+    private snack: MatSnackBar
   ) {}
 
   ngOnInit() {
@@ -46,21 +51,21 @@ export class ApplicationDetailsDialogComponent {
     this.ref.close(changed);
   }
 
-  // openResume() {
-  //   const a = this.app();
-  //   const url =a.resumeUrl;
-  //   if (!url) return;
-  //   window.open(url, '_blank');
-  // }
-  openResume(url?: string) {
-  if (!url) {
-    this['snack']?.open?.('Resume not available', 'Close', { duration: 2500 });
-    return;
+  openResume() {
+    const candidateId = this.app()?.candidateId;
+    if (!candidateId) {
+      this.snack.open('Resume not available', 'Close', { duration: 2500 });
+      return;
+    }
+    // Open the tab synchronously (within the click) so popup blockers allow it,
+    // then redirect it to the fetched CV blob from the protected endpoint.
+    const win = window.open('', '_blank');
+    this.candidatesApi.viewResume(candidateId).subscribe({
+      next: (blob) => openBlobInWindow(blob, win),
+      error: () => {
+        win?.close();
+        this.snack.open('Resume not available', 'Close', { duration: 2500 });
+      }
+    });
   }
-
-  const finalUrl = url.startsWith('http')
-    ? url
-    : `${environment.apiBaseUrl}${url}`;
-
-  window.open(finalUrl, '_blank');
-}}
+}

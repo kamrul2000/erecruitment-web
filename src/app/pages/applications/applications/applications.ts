@@ -19,8 +19,9 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 
 import { ApplicationsService } from '../../../core/services/applications.service';
 import { JobsService } from '../../../core/services/jobs.service';
+import { CandidatesService } from '../../../core/services/candidates.service';
 import { ApplicationFilterQuery, JobPosting } from '../../../core/models/api-models';
-import { environment } from '../../../../environments/environment';
+import { openBlobInWindow } from '../../../core/utils/file-open';
 
 import { StatusDialogComponent } from './../status-dialog/status-dialog';
 import { HistoryDialogComponent } from './../history-dialog/history-dialog';
@@ -86,6 +87,7 @@ export class ApplicationsComponent {
     private fb: FormBuilder,
     private appsApi: ApplicationsService,
     private jobsApi: JobsService,
+    private candidatesApi: CandidatesService,
     private snack: MatSnackBar,
     private dialog: MatDialog
   ) {
@@ -107,8 +109,9 @@ export class ApplicationsComponent {
   }
 
   loadJobs() {
-    this.jobsApi.getAll().subscribe({
-      next: (res) => this.jobs.set(res ?? []),
+    // Pipeline job selector — load up to 100 jobs (newest first).
+    this.jobsApi.getAll(1, 100).subscribe({
+      next: (res) => this.jobs.set(res?.items ?? []),
       error: () => this.snack.open('Failed to load jobs', 'Close', { duration: 3000 })
     });
   }
@@ -202,14 +205,20 @@ export class ApplicationsComponent {
 
   // }
  openResume(row: any) {
-  const url =
-    row.resumeUrl ;
-  if (!url) {
+  if (!row?.candidateId) {
     this.snack.open('Resume not available', 'Close', { duration: 2500 });
     return;
   }
-
-  window.open(`${environment.apiBaseUrl}${url}`, '_blank');
+  // Open the tab synchronously (within the click) so popup blockers allow it,
+  // then redirect it to the fetched CV blob from the protected endpoint.
+  const win = window.open('', '_blank');
+  this.candidatesApi.viewResume(row.candidateId).subscribe({
+    next: (blob) => openBlobInWindow(blob, win),
+    error: () => {
+      win?.close();
+      this.snack.open('Resume not available', 'Close', { duration: 2500 });
+    }
+  });
 }
 
 

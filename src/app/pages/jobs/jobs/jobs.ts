@@ -14,6 +14,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 
 import { JobDialogComponent } from './../job-dialog/job-dialog';
 
@@ -32,7 +33,8 @@ import { JobDialogComponent } from './../job-dialog/job-dialog';
     MatFormFieldModule,
     MatInputModule,
     MatTooltipModule,
-    MatChipsModule
+    MatChipsModule,
+    MatPaginatorModule
   ],
   templateUrl: './jobs.html',
   styleUrl: './jobs.scss'
@@ -41,20 +43,16 @@ export class JobsComponent {
   loading = signal(false);
   search = signal('');
   jobs = signal<JobPosting[]>([]);
+  total = signal(0);
+  pageIndex = signal(0);     // 0-based, for mat-paginator
+  pageSize = signal(20);
 
   displayedColumns = ['title', 'department', 'location', 'status', 'createdAt', 'actions'];
 
-  filtered = computed(() => {
-    const q = this.search().trim().toLowerCase();
-    if (!q) return this.jobs();
+  // Server already applies search + pagination; keep the template binding stable.
+  filtered = computed(() => this.jobs());
 
-    return this.jobs().filter(j =>
-      (j.title ?? '').toLowerCase().includes(q) ||
-      (j.department ?? '').toLowerCase().includes(q) ||
-      (j.location ?? '').toLowerCase().includes(q) ||
-      (j.status ?? '').toLowerCase().includes(q)
-    );
-  });
+  private searchTimer: any = null;
 
   constructor(
     private api: JobsService,
@@ -68,9 +66,10 @@ export class JobsComponent {
 
   load() {
     this.loading.set(true);
-    this.api.getAll().subscribe({
+    this.api.getAll(this.pageIndex() + 1, this.pageSize(), this.search().trim()).subscribe({
       next: (res) => {
-        this.jobs.set(res ?? []);
+        this.jobs.set(res?.items ?? []);
+        this.total.set(res?.total ?? 0);
         this.loading.set(false);
       },
       error: () => {
@@ -78,6 +77,19 @@ export class JobsComponent {
         this.snack.open('Failed to load jobs', 'Close', { duration: 3000 });
       }
     });
+  }
+
+  onSearch(value: string) {
+    this.search.set(value);
+    this.pageIndex.set(0); // new search starts on the first page
+    if (this.searchTimer) clearTimeout(this.searchTimer);
+    this.searchTimer = setTimeout(() => this.load(), 300);
+  }
+
+  onPage(e: PageEvent) {
+    this.pageIndex.set(e.pageIndex);
+    this.pageSize.set(e.pageSize);
+    this.load();
   }
 
   openCreate() {

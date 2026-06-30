@@ -52,9 +52,10 @@ export class Dashboard {
       }
     };
 
-    this.candidatesApi.getAll().subscribe({
+    // Ask only for the total (pageSize 1) — the count is in the envelope.
+    this.candidatesApi.getAll(1, 1).subscribe({
       next: res => {
-        this.candidatesCount.set((res ?? []).length);
+        this.candidatesCount.set(res?.total ?? 0);
         finalize();
       },
       error: () => {
@@ -63,26 +64,12 @@ export class Dashboard {
       }
     });
 
-    this.jobsApi.getAll().subscribe({
+    this.jobsApi.stats().subscribe({
       next: res => {
-        const list = res ?? [];
-        this.jobsTotal.set(list.length);
-
-        let open = 0;
-        let draft = 0;
-        let closed = 0;
-
-        for (const j of list) {
-          const status = (j.status || '').toLowerCase();
-          if (status === 'published') open += 1;
-          else if (status === 'draft') draft += 1;
-          else if (status === 'closed') closed += 1;
-        }
-
-        this.jobsOpen.set(open);
-        this.jobsDraft.set(draft);
-        this.jobsClosed.set(closed);
-
+        this.jobsTotal.set(res?.total ?? 0);
+        this.jobsOpen.set(res?.published ?? 0);
+        this.jobsDraft.set(res?.draft ?? 0);
+        this.jobsClosed.set(res?.closed ?? 0);
         finalize();
       },
       error: () => {

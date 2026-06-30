@@ -13,9 +13,10 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { environment } from '../../../../environments/environment';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 
 import { CandidateDialogComponent } from '../candidate-dialog/candidate-dialog';
+import { openBlobInWindow } from '../../../core/utils/file-open';
 
 @Component({
   selector: 'app-candidates',
@@ -32,7 +33,8 @@ import { CandidateDialogComponent } from '../candidate-dialog/candidate-dialog';
     MatProgressSpinnerModule,
     MatFormFieldModule,
     MatInputModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatPaginatorModule
   ],
   templateUrl: './candidates.html',
   styleUrl: './candidates.scss'
@@ -42,19 +44,15 @@ export class CandidatesComponent {
   search = signal('');
 
   candidates = signal<Candidate[]>([]);
+  total = signal(0);
+  pageIndex = signal(0);     // 0-based, for mat-paginator
+  pageSize = signal(20);
   displayedColumns = ['fullName', 'email', 'phone', 'experience', 'salary', 'resume', 'actions'];
 
-  filtered = computed(() => {
-    const q = this.search().trim().toLowerCase();
-    if (!q) return this.candidates();
+  // Server already applies search + pagination; keep the template binding stable.
+  filtered = computed(() => this.candidates());
 
-    return this.candidates().filter(c =>
-      (c.fullName ?? '').toLowerCase().includes(q) ||
-      (c.email ?? '').toLowerCase().includes(q) ||
-      (c.phone ?? '').toLowerCase().includes(q) ||
-      (c.addressLine ?? '').toLowerCase().includes(q)
-    );
-  });
+  private searchTimer: any = null;
 
   constructor(
     private api: CandidatesService,
@@ -68,11 +66,10 @@ export class CandidatesComponent {
 
   load() {
     this.loading.set(true);
-    this.api.getAll().subscribe({
-      next: (res: any) => {
-        // Your backend currently returns CandidateResponse (limited fields) OR full Candidate entity
-        // If it's CandidateResponse, some columns may show empty; it's okay.
-        this.candidates.set(res ?? []);
+    this.api.getAll(this.pageIndex() + 1, this.pageSize(), this.search().trim()).subscribe({
+      next: (res) => {
+        this.candidates.set(res?.items ?? []);
+        this.total.set(res?.total ?? 0);
         this.loading.set(false);
       },
       error: () => {
@@ -80,6 +77,19 @@ export class CandidatesComponent {
         this.snack.open('Failed to load candidates', 'Close', { duration: 3000 });
       }
     });
+  }
+
+  onSearch(value: string) {
+    this.search.set(value);
+    this.pageIndex.set(0); // new search starts on the first page
+    if (this.searchTimer) clearTimeout(this.searchTimer);
+    this.searchTimer = setTimeout(() => this.load(), 300);
+  }
+
+  onPage(e: PageEvent) {
+    this.pageIndex.set(e.pageIndex);
+    this.pageSize.set(e.pageSize);
+    this.load();
   }
 
   openCreate() {
@@ -119,9 +129,19 @@ export class CandidatesComponent {
 
 
   openResume(candidate: any) {
-    // backend stores ResumeUrl like /uploads/{tenantId}/candidates/{id}/file.pdf
-    if (!candidate.resumeUrl) return;
-        window.open(`${environment.apiBaseUrl}${candidate.resumeUrl}`, '_blank');
-
+    if (!candidate?.id) {
+      this.snack.open('Resume not available', 'Close', { duration: 2500 });
+      return;
+    }
+    // Open the tab synchronously (within the click) so popup blockers allow it,
+    // then redirect it to the fetched CV blob.
+    const win = window.open('', '_blank');
+    this.api.viewResume(candidate.id).subscribe({
+      next: (blob) => openBlobInWindow(blob, win),
+      error: () => {
+        win?.close();
+        this.snack.open('Resume not available', 'Close', { duration: 2500 });
+      }
+    });
   }
 }

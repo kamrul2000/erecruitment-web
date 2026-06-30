@@ -1,15 +1,32 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { Candidate } from '../models/api-models';
+
+export interface PagedResult<T> {
+  total: number;
+  page: number;
+  pageSize: number;
+  items: T[];
+}
 
 @Injectable({ providedIn: 'root' })
 export class CandidatesService {
   private base = environment.apiBaseUrl;
   constructor(private http: HttpClient) {}
 
-  getAll() {
-    return this.http.get<Candidate[]>(`${this.base}/api/Candidates`);
+  // Server-side paginated + searchable. Returns { total, page, pageSize, items }.
+  getAll(page = 1, pageSize = 20, search = '') {
+    let params = new HttpParams().set('page', page).set('pageSize', pageSize);
+    if (search) params = params.set('search', search);
+    return this.http.get<PagedResult<Candidate>>(`${this.base}/api/Candidates`, { params });
+  }
+
+  // Fetches a candidate's CV from the authenticated, tenant-scoped endpoint.
+  viewResume(candidateId: string) {
+    return this.http.get(`${this.base}/api/Candidates/${candidateId}/resume/file`, {
+      responseType: 'blob'
+    });
   }
 
   getById(id: string) {
