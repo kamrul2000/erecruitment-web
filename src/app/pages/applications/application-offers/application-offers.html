@@ -1,0 +1,96 @@
+<div class="offers-wrap">
+  <div class="offers-head">
+    <div class="h">Offers</div>
+    <button mat-flat-button color="primary" (click)="newOffer()" *ngIf="!showForm()">
+      <mat-icon>add</mat-icon>
+      New offer
+    </button>
+  </div>
+
+  <!-- create / edit form -->
+  <mat-card class="form-card" *ngIf="showForm()">
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="row">
+        <mat-form-field appearance="outline" class="grow">
+          <mat-label>Position title</mat-label>
+          <input matInput formControlName="positionTitle" placeholder="e.g. Senior Engineer" />
+        </mat-form-field>
+      </div>
+
+      <div class="row">
+        <mat-form-field appearance="outline">
+          <mat-label>Salary</mat-label>
+          <input matInput type="number" formControlName="salary" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Currency</mat-label>
+          <input matInput formControlName="salaryCurrency" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Start date</mat-label>
+          <input matInput type="date" formControlName="startDate" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Expires</mat-label>
+          <input matInput type="date" formControlName="expiresAt" />
+        </mat-form-field>
+      </div>
+
+      <div class="row">
+        <mat-form-field appearance="outline" class="grow">
+          <mat-label>Notes / offer details</mat-label>
+          <textarea matInput rows="3" formControlName="notes"></textarea>
+        </mat-form-field>
+      </div>
+
+      <div class="form-actions">
+        <button mat-button type="button" (click)="cancelForm()">Cancel</button>
+        <button mat-flat-button color="primary" type="submit" [disabled]="saving()">
+          {{ editingId() ? 'Update offer' : 'Create offer' }}
+        </button>
+      </div>
+    </form>
+  </mat-card>
+
+  <div class="busy" *ngIf="loading()">
+    <mat-spinner diameter="28"></mat-spinner>
+  </div>
+
+  <div class="empty" *ngIf="!loading() && offers().length === 0 && !showForm()">
+    No offers yet for this application.
+  </div>
+
+  <mat-card class="offer-card" *ngFor="let o of offers()">
+    <div class="offer-top">
+      <div>
+        <div class="pos">{{ o.positionTitle }}</div>
+        <div class="meta">
+          <span *ngIf="o.salary != null">{{ o.salary }} {{ o.salaryCurrency }}</span>
+          <span *ngIf="o.startDate"> • Start {{ o.startDate | date:'mediumDate' }}</span>
+          <span *ngIf="o.expiresAt"> • Expires {{ o.expiresAt | date:'mediumDate' }}</span>
+        </div>
+      </div>
+      <mat-chip [ngClass]="chip(o.status)">{{ o.status }}</mat-chip>
+    </div>
+
+    <div class="notes" *ngIf="o.notes">{{ o.notes }}</div>
+    <div class="resp" *ngIf="o.responseNote">Response: {{ o.responseNote }}</div>
+
+    <mat-divider></mat-divider>
+    <div class="offer-actions" [ngSwitch]="o.status">
+      <ng-container *ngSwitchCase="'Draft'">
+        <button mat-button color="primary" (click)="act(o, 'send')"><mat-icon>send</mat-icon> Send</button>
+        <button mat-button (click)="edit(o)"><mat-icon>edit</mat-icon> Edit</button>
+        <button mat-button color="warn" (click)="act(o, 'withdraw')">Withdraw</button>
+      </ng-container>
+      <ng-container *ngSwitchCase="'Sent'">
+        <button mat-button color="primary" (click)="act(o, 'accept')"><mat-icon>check</mat-icon> Mark accepted</button>
+        <button mat-button (click)="act(o, 'decline')"><mat-icon>close</mat-icon> Mark declined</button>
+        <button mat-button color="warn" (click)="act(o, 'withdraw')">Withdraw</button>
+      </ng-container>
+      <ng-container *ngSwitchDefault>
+        <span class="terminal">No further actions ({{ o.status }})</span>
+      </ng-container>
+    </div>
+  </mat-card>
+</div>
