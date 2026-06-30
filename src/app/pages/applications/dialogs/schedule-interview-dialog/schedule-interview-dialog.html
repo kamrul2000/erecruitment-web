@@ -1,7 +1,7 @@
-<h2 mat-dialog-title>Schedule Interview</h2>
+<h2 mat-dialog-title>{{ isEdit ? 'Edit / Reschedule Interview' : 'Schedule Interview' }}</h2>
 
 <mat-dialog-content [formGroup]="form">
-  <div class="sub">
+  <div class="sub" *ngIf="round?.name">
     Round: <b>{{ round?.name }}</b>
   </div>
 
@@ -53,6 +53,6 @@
   <button mat-button (click)="close()">Cancel</button>
   <button mat-flat-button color="primary" (click)="save()">
     <mat-icon>event</mat-icon>
-    Schedule
+    {{ isEdit ? 'Save changes' : 'Schedule' }}
   </button>
 </mat-dialog-actions>

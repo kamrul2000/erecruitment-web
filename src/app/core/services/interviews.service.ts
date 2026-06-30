@@ -19,6 +19,14 @@ export class InterviewsService {
     return this.http.post<any>(`${this.base}/api/Interviews/createSchedule`, payload);
   }
 
+  update(interviewId: string, payload: any) {
+    return this.http.put<void>(`${this.base}/api/Interviews/${interviewId}`, payload);
+  }
+
+  sendReminder(interviewId: string) {
+    return this.http.put<void>(`${this.base}/api/Interviews/${interviewId}/reminder`, {});
+  }
+
   cancel(interviewId: string) {
     return this.http.put<void>(`${this.base}/api/Interviews/${interviewId}/cancel`, {});
   }

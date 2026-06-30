@@ -182,6 +182,43 @@ export class ApplicationInterviewsComponent implements OnChanges{
     });
   }
 
+  openEdit(interview: any, round: any) {
+    const ref = this.dialog.open(ScheduleInterviewDialogComponent, {
+      width: '760px',
+      data: {
+        applicationId: this.applicationId,
+        round,
+        interview,
+        users: this.users()
+      }
+    });
+
+    ref.afterClosed().subscribe((payload: any) => {
+      if (!payload) return;
+
+      this.api.update(interview.id, payload).subscribe({
+        next: () => {
+          this.snack.open('Interview updated', 'Close', { duration: 2500 });
+          this.load();
+        },
+        error: (err) => {
+          const msg = typeof err?.error === 'string' ? err.error : 'Update failed';
+          this.snack.open(msg, 'Close', { duration: 3500 });
+        }
+      });
+    });
+  }
+
+  sendReminder(interview: any) {
+    this.api.sendReminder(interview.id).subscribe({
+      next: () => this.snack.open('Reminder sent', 'Close', { duration: 2500 }),
+      error: (err) => {
+        const msg = typeof err?.error === 'string' ? err.error : 'Reminder failed';
+        this.snack.open(msg, 'Close', { duration: 3000 });
+      }
+    });
+  }
+
   cancel(interview: any) {
     const ok = confirm('Cancel this interview?');
     if (!ok) return;

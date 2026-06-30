@@ -84,6 +84,16 @@
               Feedback
             </button>
 
+            <button mat-button (click)="openEdit(i, r)" [disabled]="(i.status || '').toLowerCase() !== 'scheduled'">
+              <mat-icon>edit_calendar</mat-icon>
+              Reschedule
+            </button>
+
+            <button mat-button (click)="sendReminder(i)" [disabled]="(i.status || '').toLowerCase() !== 'scheduled'">
+              <mat-icon>notifications</mat-icon>
+              Reminder
+            </button>
+
             <span class="spacer"></span>
 
             <button mat-button (click)="complete(i)" [disabled]="(i.status || '').toLowerCase() !== 'scheduled'">

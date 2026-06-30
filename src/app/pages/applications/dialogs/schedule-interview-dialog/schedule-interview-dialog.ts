@@ -32,6 +32,8 @@ export class ScheduleInterviewDialogComponent {
 
   round: any;
   users: any[];
+  interview: any;
+  isEdit = false;
 
   constructor(
     private fb: FormBuilder,
@@ -49,6 +51,27 @@ export class ScheduleInterviewDialogComponent {
       });
     this.round = data?.round;
     this.users = data?.users ?? [];
+    this.interview = data?.interview;
+    this.isEdit = !!this.interview;
+
+    if (this.interview) {
+      const dt = new Date(this.interview.startsAtUtc);
+      const participantIds = (this.interview._participants ?? []).map((p: any) => p.userId);
+      this.form.patchValue({
+        startsAtLocal: this.toLocalInput(dt),
+        durationMinutes: this.interview.durationMinutes ?? 60,
+        mode: this.interview.mode ?? 'Online',
+        location: this.interview.location ?? '',
+        meetingLink: this.interview.meetingLink ?? '',
+        notes: this.interview.notes ?? '',
+        participantUserIds: participantIds
+      });
+    }
+  }
+
+  private toLocalInput(d: Date): string {
+    const pad = (n: number) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
   }
 
   save() {
@@ -65,7 +88,7 @@ export class ScheduleInterviewDialogComponent {
 
     this.ref.close({
       jobApplicationId: this.data.applicationId,
-      interviewRoundId: this.round.id,
+      interviewRoundId: this.round?.id ?? this.interview?.interviewRoundId,
       startsAtUtc,
       durationMinutes: v.durationMinutes,
       mode: v.mode,

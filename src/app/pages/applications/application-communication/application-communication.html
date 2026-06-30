@@ -1,0 +1,53 @@
+<div class="comm-wrap">
+  <div class="comm-head">
+    <div class="h">Communication</div>
+    <button mat-flat-button color="primary" (click)="newEmail()" *ngIf="!showForm()">
+      <mat-icon>mail</mat-icon>
+      Send email
+    </button>
+  </div>
+
+  <!-- compose -->
+  <mat-card class="form-card" *ngIf="showForm()">
+    <form [formGroup]="form" (ngSubmit)="send()">
+      <mat-form-field appearance="outline" class="grow">
+        <mat-label>Subject</mat-label>
+        <input matInput formControlName="subject" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="grow">
+        <mat-label>Message</mat-label>
+        <textarea matInput rows="5" formControlName="body"></textarea>
+      </mat-form-field>
+      <div class="form-actions">
+        <button mat-button type="button" (click)="cancelForm()">Cancel</button>
+        <button mat-flat-button color="primary" type="submit" [disabled]="sending()">Send email</button>
+      </div>
+    </form>
+  </mat-card>
+
+  <div class="busy" *ngIf="loading()">
+    <mat-spinner diameter="28"></mat-spinner>
+  </div>
+
+  <div class="empty" *ngIf="!loading() && emails().length === 0 && !showForm()">
+    No emails sent for this application yet.
+  </div>
+
+  <mat-card class="email-card" *ngFor="let e of emails()">
+    <div class="email-top">
+      <div>
+        <div class="subj">{{ e.subject }}</div>
+        <div class="meta">
+          <span class="type">{{ label(e.templateType) }}</span>
+          • to {{ e.toEmail }} • {{ e.createdAt | date:'medium' }}
+        </div>
+      </div>
+      <mat-chip [ngClass]="chip(e.status)">{{ e.status }}</mat-chip>
+    </div>
+
+    <div class="err" *ngIf="e.error">Delivery error: {{ e.error }}</div>
+
+    <mat-divider></mat-divider>
+    <div class="body">{{ e.body }}</div>
+  </mat-card>
+</div>

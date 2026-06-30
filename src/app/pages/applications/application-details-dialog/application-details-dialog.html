@@ -68,5 +68,9 @@
     <mat-tab label="Offer">
       <app-application-offers [applicationId]="app().id || app().applicationId"></app-application-offers>
     </mat-tab>
+
+    <mat-tab label="Communication">
+      <app-application-communication [applicationId]="app().id || app().applicationId"></app-application-communication>
+    </mat-tab>
   </mat-tab-group>
 </div>
