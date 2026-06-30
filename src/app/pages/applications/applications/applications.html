@@ -1,11 +1,11 @@
-<mat-card class="card">
-  <div class="header">
-    <div>
-      <div class="title">Applications</div>
-      <div class="subtitle">Filter, review, shortlist and update application pipeline</div>
-    </div>
+<div class="page-head">
+  <div class="titles">
+    <h1>Applications</h1>
+    <div class="sub">Filter, review, shortlist and update the application pipeline</div>
   </div>
+</div>
 
+<mat-card class="list-card applications-card">
   <mat-tab-group (selectedIndexChange)="onTabChange($event)">
     <mat-tab label="All Applications">
       <div class="tab-pad">
@@ -38,7 +38,7 @@
         </ng-container>
 
         <ng-template #pickJob>
-          <div class="empty">
+          <div class="empty-state">
             Select a job to view its pipeline.
           </div>
         </ng-template>
@@ -132,9 +132,7 @@
       <ng-container matColumnDef="status">
         <th mat-header-cell *matHeaderCellDef> Status </th>
         <td mat-cell *matCellDef="let r">
-          <mat-chip class="chip" [ngClass]="statusClass(r.status)">
-            {{ r.status }}
-          </mat-chip>
+          <span class="pill" [ngClass]="statusClass(r.status)">{{ r.status }}</span>
         </td>
       </ng-container>
 
@@ -202,15 +200,14 @@
       (page)="onPage($event)">
     </mat-paginator>
 
-    <div class="empty" *ngIf="items().length === 0">
+    <div class="empty-state" *ngIf="items().length === 0">
       No applications found.
     </div>
   </div>
 
   <ng-template #busy>
-    <div class="busy">
+    <div class="busy-center">
       <mat-spinner diameter="32"></mat-spinner>
-      <div>Loading applications...</div>
     </div>
   </ng-template>
 </ng-template>

@@ -1,30 +1,24 @@
-<mat-card class="card">
-  <div class="header">
-    <div>
-      <div class="title">Branding / Career Page Theme</div>
-      <div class="sub">Admin can set company branding. Public portal will auto-apply it.</div>
-    </div>
-
-    <div class="actions">
-      <button mat-stroked-button (click)="load()" [disabled]="loading() || saving()">
-        <mat-icon>refresh</mat-icon> Refresh
-      </button>
-      <button mat-stroked-button (click)="resetDefaults()" [disabled]="loading() || saving()">
-        Reset
-      </button>
-      <button mat-flat-button color="primary" (click)="save()" [disabled]="loading() || saving()">
-        <mat-icon>save</mat-icon>
-        Save
-      </button>
-    </div>
+<div class="page-head">
+  <div class="titles">
+    <h1>Branding &amp; Career Page Theme</h1>
+    <div class="sub">Set company branding — the public careers portal auto-applies it.</div>
   </div>
-
-  <div *ngIf="loading(); else content" class="busy">
-    <mat-spinner diameter="32"></mat-spinner>
-    <div>Loading theme...</div>
+  <div class="head-actions">
+    <button mat-stroked-button (click)="load()" [disabled]="loading() || saving()">
+      <mat-icon>refresh</mat-icon> Refresh
+    </button>
+    <button mat-stroked-button (click)="resetDefaults()" [disabled]="loading() || saving()">Reset</button>
+    <button mat-flat-button color="primary" (click)="save()" [disabled]="loading() || saving()">
+      <mat-icon>save</mat-icon> Save
+    </button>
   </div>
+</div>
 
-  <ng-template #content>
+<div *ngIf="loading(); else content" class="busy-center">
+  <mat-spinner diameter="32"></mat-spinner>
+</div>
+
+<ng-template #content>
     <div class="grid" [formGroup]="form">
       <!-- Left: Settings -->
       <mat-card class="panel">
@@ -144,4 +138,3 @@
       </mat-card>
     </div>
   </ng-template>
-</mat-card>

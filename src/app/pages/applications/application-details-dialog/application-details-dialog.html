@@ -40,7 +40,7 @@
 
           <div>
             <div class="label">Status</div>
-            <mat-chip class="chip">{{ app().status }}</mat-chip>
+            <span class="pill" [ngClass]="(app().status || '').toLowerCase()">{{ app().status }}</span>
           </div>
 
           <div>

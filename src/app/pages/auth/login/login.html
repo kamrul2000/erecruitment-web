@@ -1,17 +1,18 @@
-<div class="page">
-  <mat-card class="card">
-    <div class="header">
-      <mat-icon class="logo">verified</mat-icon>
+<div class="auth-page">
+  <mat-card class="auth-card">
+    <div class="auth-brand">
+      <div class="auth-badge"><mat-icon>verified</mat-icon></div>
       <div>
-        <div class="title">ERecruitment</div>
-        <div class="subtitle">Login to your tenant</div>
+        <div class="auth-title">Welcome back</div>
+        <div class="auth-sub">Sign in to your ERecruitment workspace</div>
       </div>
     </div>
 
     <form [formGroup]="form" (ngSubmit)="submit()">
       <mat-form-field appearance="outline" class="full">
-        <mat-label>Tenant Slug</mat-label>
-        <input matInput formControlName="tenantSlug" placeholder="ex: acme" />
+        <mat-label>Tenant slug</mat-label>
+        <mat-icon matPrefix>apartment</mat-icon>
+        <input matInput formControlName="tenantSlug" placeholder="e.g. acme" />
         <mat-error *ngIf="form.controls.tenantSlug.touched && form.controls.tenantSlug.invalid">
           Tenant slug is required
         </mat-error>
@@ -19,7 +20,8 @@
 
       <mat-form-field appearance="outline" class="full">
         <mat-label>Email</mat-label>
-        <input matInput formControlName="email" placeholder="admin@gmail.com" />
+        <mat-icon matPrefix>mail</mat-icon>
+        <input matInput formControlName="email" placeholder="you@company.com" />
         <mat-error *ngIf="form.controls.email.touched && form.controls.email.invalid">
           Enter a valid email
         </mat-error>
@@ -27,8 +29,10 @@
 
       <mat-form-field appearance="outline" class="full">
         <mat-label>Password</mat-label>
+        <mat-icon matPrefix>lock</mat-icon>
         <input matInput [type]="hidePassword() ? 'password' : 'text'" formControlName="password" />
-        <button mat-icon-button matSuffix type="button" (click)="hidePassword.set(!hidePassword())">
+        <button mat-icon-button matSuffix type="button" (click)="hidePassword.set(!hidePassword())"
+                [attr.aria-label]="'Toggle password visibility'">
           <mat-icon>{{ hidePassword() ? 'visibility' : 'visibility_off' }}</mat-icon>
         </button>
         <mat-error *ngIf="form.controls.password.touched && form.controls.password.invalid">
@@ -36,16 +40,13 @@
         </mat-error>
       </mat-form-field>
 
-      <button mat-flat-button color="primary" class="full btn" [disabled]="loading()">
-        <ng-container *ngIf="!loading(); else spinner">Login</ng-container>
-        <ng-template #spinner>
-          <mat-spinner diameter="20"></mat-spinner>
-        </ng-template>
+      <button mat-flat-button color="primary" class="auth-submit" [disabled]="loading()">
+        <ng-container *ngIf="!loading(); else spinner">Sign in</ng-container>
+        <ng-template #spinner><mat-spinner diameter="22"></mat-spinner></ng-template>
       </button>
-
-      <div class="hint">
-        Use tenant slug + email + password.
-      </div>
     </form>
+
+    <div class="auth-foot">SaaS owner? <a routerLink="/saas/login">SuperAdmin login</a></div>
+    <div class="auth-hint">Use your tenant slug + email + password.</div>
   </mat-card>
 </div>

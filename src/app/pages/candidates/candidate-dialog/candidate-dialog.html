@@ -79,22 +79,19 @@
         <mat-option *ngFor="let c of currencies" [value]="c">{{ c }}</mat-option>
       </mat-select>
     </mat-form-field>
-   
- 
 
-  <button mat-stroked-button type="button" (click)="fileInput.click()">
-  <mat-icon>upload</mat-icon>
-  Choose Resume
-</button>
-
-<input
-  #fileInput
-  type="file"
-  hidden
-  (change)="onFileSelected($event)"
-/>
-
-<span *ngIf="uploadedFileName">{{ uploadedFileName }}</span>
+    <div class="full">
+      <label class="field-label">Resume (PDF / DOC / DOCX)</label>
+      <div class="file-pick">
+        <button mat-stroked-button type="button" (click)="fileInput.click()">
+          <mat-icon>upload</mat-icon>
+          Choose file
+        </button>
+        <input #fileInput type="file" hidden (change)="onFileSelected($event)" />
+        <span class="file-name" *ngIf="uploadedFileName">{{ uploadedFileName }}</span>
+        <span class="muted" *ngIf="!uploadedFileName">No file selected</span>
+      </div>
+    </div>
   </div>
 </mat-dialog-content>
 

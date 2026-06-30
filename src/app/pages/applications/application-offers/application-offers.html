@@ -70,7 +70,7 @@
           <span *ngIf="o.expiresAt"> • Expires {{ o.expiresAt | date:'mediumDate' }}</span>
         </div>
       </div>
-      <mat-chip [ngClass]="chip(o.status)">{{ o.status }}</mat-chip>
+      <span class="pill" [ngClass]="(o.status || '').toLowerCase()">{{ o.status }}</span>
     </div>
 
     <div class="notes" *ngIf="o.notes">{{ o.notes }}</div>

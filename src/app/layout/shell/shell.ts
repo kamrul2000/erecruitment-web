@@ -34,11 +34,10 @@ import { AuthService } from '../../core/services/auth.service';
 })
 export class ShellComponent {
   isSidenavOpen = signal(true);
+  activeUrl = signal('/');
 
   user = computed(() => this.auth.getCurrentUser());
   role = computed(() => this.user()?.role ?? '');
-
-  pageTitle = signal('Dashboard');
 
   menu = computed(() => {
     const role = this.role();
@@ -64,15 +63,24 @@ export class ShellComponent {
     return items.filter(i => !i.roles || i.roles.includes(role));
   });
 
+  // The active menu path = the longest menu path that matches the current URL,
+  // so /settings/branding highlights "Branding" rather than both it and "Settings".
+  activePath = computed(() => {
+    const url = this.activeUrl();
+    const matches = this.menu().filter(i =>
+      (i.path === '/' && url === '/') ||
+      (i.path !== '/' && (url === i.path || url.startsWith(i.path + '/')))
+    );
+    if (!matches.length) return '/';
+    return matches.reduce((a, b) => (b.path.length > a.path.length ? b : a)).path;
+  });
+
+  pageTitle = computed(() => this.menu().find(i => i.path === this.activePath())?.label ?? 'Dashboard');
+
   constructor(private auth: AuthService, private router: Router) {
-    // Update title based on route
+    this.activeUrl.set(this.router.url);
     this.router.events.pipe(filter(e => e instanceof NavigationEnd)).subscribe(() => {
-      const url = this.router.url;
-      if (url.startsWith('/candidates')) this.pageTitle.set('Candidates');
-      else if (url.startsWith('/jobs')) this.pageTitle.set('Jobs');
-      else if (url.startsWith('/applications')) this.pageTitle.set('Applications');
-      else if (url.startsWith('/tenants')) this.pageTitle.set('Tenants');
-      else this.pageTitle.set('Dashboard');
+      this.activeUrl.set(this.router.url);
     });
   }
 
@@ -87,5 +95,13 @@ export class ShellComponent {
 
   go(path: string) {
     this.router.navigate([path]);
+  }
+
+  initials(name?: string): string {
+    if (!name) return '?';
+    const parts = name.trim().split(/\s+/);
+    const first = parts[0]?.[0] ?? '';
+    const last = parts.length > 1 ? parts[parts.length - 1][0] : '';
+    return (first + last).toUpperCase() || '?';
   }
 }

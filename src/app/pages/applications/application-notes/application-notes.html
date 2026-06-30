@@ -72,7 +72,7 @@
   <mat-card class="note-card" *ngFor="let n of notes()">
     <div class="note-top">
       <div>
-        <mat-chip [ngClass]="kindChip(n.kind)">{{ n.kind }}</mat-chip>
+        <span class="pill" [ngClass]="(n.kind || '').toLowerCase()">{{ n.kind }}</span>
         <span class="who"> {{ n.authorEmail || 'Unknown' }} • {{ n.createdAt | date:'medium' }}</span>
       </div>
       <button mat-icon-button color="warn" (click)="remove(n)" matTooltip="Delete">
@@ -90,7 +90,7 @@
         <span *ngIf="avg(n)"><b>Avg</b> {{ avg(n) }}/5</span>
       </div>
       <div class="rec" *ngIf="n.recommendation">
-        <mat-chip [ngClass]="recChip(n.recommendation)">{{ recLabel(n.recommendation) }}</mat-chip>
+        <span class="pill" [ngClass]="(n.recommendation || '').toLowerCase()">{{ recLabel(n.recommendation) }}</span>
       </div>
     </div>
   </mat-card>

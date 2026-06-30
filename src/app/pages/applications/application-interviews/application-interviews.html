@@ -49,9 +49,7 @@
               </div>
             </div>
 
-            <mat-chip class="chip" [ngClass]="chipStatus(i.status)">
-              {{ i.status }}
-            </mat-chip>
+            <span class="pill" [ngClass]="(i.status || '').toLowerCase()">{{ i.status }}</span>
           </div>
 
           <div class="link" *ngIf="i.meetingLink">

@@ -287,6 +287,9 @@
   padding-inline: var(--details-space-md);
 }
 
+// Tenant-branded page — keep it independent of the global admin card styling.
+.public-job-details__card { box-shadow: var(--details-shadow-card) !important; }
+
 @media (max-width: 960px) {
   .public-job-details {
     padding-inline: var(--details-space-sm);

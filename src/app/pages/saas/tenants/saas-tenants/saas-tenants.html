@@ -1,25 +1,23 @@
-<mat-card class="card">
-  <div class="header">
-    <div>
-      <div class="title">Tenants</div>
-      <div class="subtitle">SuperAdmin only • Create tenants and manage status</div>
-    </div>
-
-    <div class="actions">
-      <button mat-stroked-button (click)="load()" [disabled]="loading()">
-        <mat-icon>refresh</mat-icon> Refresh
-      </button>
-      <button mat-flat-button color="primary" (click)="openCreate()">
-        <mat-icon>add</mat-icon> Create Tenant
-      </button>
-    </div>
+<div class="page-head">
+  <div class="titles">
+    <h1>Tenants</h1>
+    <div class="sub">SuperAdmin only • create tenants and manage status</div>
   </div>
+  <div class="head-actions">
+    <button mat-stroked-button (click)="load()" [disabled]="loading()">
+      <mat-icon>refresh</mat-icon> Refresh
+    </button>
+    <button mat-flat-button color="primary" (click)="openCreate()">
+      <mat-icon>add</mat-icon> Create tenant
+    </button>
+  </div>
+</div>
 
-  <div class="filters" [formGroup]="filterForm">
-    <mat-form-field appearance="outline" class="w360">
-      <mat-label>Search</mat-label>
-      <input matInput formControlName="keyword" placeholder="name or slug..." />
-      <mat-icon matSuffix>search</mat-icon>
+<mat-card class="list-card">
+  <div class="list-toolbar" [formGroup]="filterForm">
+    <mat-form-field appearance="outline" class="search" subscriptSizing="dynamic">
+      <mat-icon matPrefix>search</mat-icon>
+      <input matInput formControlName="keyword" placeholder="Search name or slug…" />
     </mat-form-field>
   </div>
 
@@ -45,9 +43,7 @@
       <ng-container matColumnDef="status">
         <th mat-header-cell *matHeaderCellDef> Status </th>
         <td mat-cell *matCellDef="let r">
-          <mat-chip class="chip" [ngClass]="statusClass(r.isActive)">
-            {{ r.isActive ? 'Active' : 'Disabled' }}
-          </mat-chip>
+          <span class="pill" [ngClass]="statusClass(r.isActive)">{{ r.isActive ? 'Active' : 'Disabled' }}</span>
         </td>
       </ng-container>
 
@@ -55,16 +51,16 @@
         <th mat-header-cell *matHeaderCellDef> Stats </th>
         <td mat-cell *matCellDef="let r">
           <div class="stats">
-            <mat-chip class="schip" matTooltip="Users">{{ r.users }} Users</mat-chip>
-            <mat-chip class="schip" matTooltip="Jobs">{{ r.jobs }} Jobs</mat-chip>
-            <mat-chip class="schip" matTooltip="Applications">{{ r.applications }} Apps</mat-chip>
+            <span class="stat-badge">{{ r.users }} users</span>
+            <span class="stat-badge">{{ r.jobs }} jobs</span>
+            <span class="stat-badge">{{ r.applications }} apps</span>
           </div>
         </td>
       </ng-container>
 <ng-container matColumnDef="plan">
   <th mat-header-cell *matHeaderCellDef> Plan </th>
   <td mat-cell *matCellDef="let r">
-    <mat-chip class="schip">{{ r.plan || 'Free' }}</mat-chip>
+    <span class="pill" [ngClass]="(r.plan || 'Free').toLowerCase()">{{ r.plan || 'Free' }}</span>
   </td>
 </ng-container>
 
@@ -91,15 +87,14 @@
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>
 
-    <div class="empty" *ngIf="filtered().length === 0">
+    <div class="empty-state" *ngIf="filtered().length === 0">
       No tenants found.
     </div>
   </div>
 
   <ng-template #busy>
-    <div class="busy">
+    <div class="busy-center">
       <mat-spinner diameter="32"></mat-spinner>
-      <div>Loading tenants...</div>
     </div>
   </ng-template>
 </mat-card>

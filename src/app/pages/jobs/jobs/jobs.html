@@ -1,22 +1,23 @@
-<mat-card class="card">
-  <div class="header">
-    <div>
-      <div class="title">Jobs</div>
-      <div class="subtitle">Create and manage job postings</div>
-    </div>
+<div class="page-head">
+  <div class="titles">
+    <h1>Jobs</h1>
+    <div class="sub">Create and manage job postings</div>
+  </div>
+  <div class="head-actions">
+    <button mat-flat-button color="primary" (click)="openCreate()">
+      <mat-icon>add</mat-icon>
+      Add job
+    </button>
+  </div>
+</div>
 
-    <div class="actions">
-      <mat-form-field appearance="outline" class="search">
-        <mat-label>Search</mat-label>
-        <input matInput (input)="onSearch($any($event.target).value)" placeholder="title, dept, status..." />
-        <mat-icon matSuffix>search</mat-icon>
-      </mat-form-field>
-
-      <button mat-flat-button color="primary" (click)="openCreate()">
-        <mat-icon>add</mat-icon>
-        Add Job
-      </button>
-    </div>
+<mat-card class="list-card">
+  <div class="list-toolbar">
+    <mat-form-field appearance="outline" class="search" subscriptSizing="dynamic">
+      <mat-icon matPrefix>search</mat-icon>
+      <input matInput (input)="onSearch($any($event.target).value)" placeholder="Search title, department, status…" />
+    </mat-form-field>
+    <span class="count muted" *ngIf="!loading()">{{ total() | number }} total</span>
   </div>
 
   <div class="table-wrap" *ngIf="!loading(); else busy">
@@ -43,9 +44,7 @@
       <ng-container matColumnDef="status">
         <th mat-header-cell *matHeaderCellDef> Status </th>
         <td mat-cell *matCellDef="let j">
-          <mat-chip class="chip" [ngClass]="statusClass(j.status)">
-            {{ j.status }}
-          </mat-chip>
+          <span class="pill" [ngClass]="statusClass(j.status)">{{ j.status }}</span>
         </td>
       </ng-container>
 
@@ -72,7 +71,7 @@
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
 
-    <div class="empty" *ngIf="filtered().length === 0">
+    <div class="empty-state" *ngIf="filtered().length === 0">
       No jobs found.
     </div>
 
@@ -86,9 +85,8 @@
   </div>
 
   <ng-template #busy>
-    <div class="busy">
+    <div class="busy-center">
       <mat-spinner diameter="32"></mat-spinner>
-      <div>Loading jobs...</div>
     </div>
   </ng-template>
 </mat-card>

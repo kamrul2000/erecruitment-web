@@ -15,9 +15,7 @@
         <ng-container matColumnDef="to">
           <th mat-header-cell *matHeaderCellDef> To </th>
           <td mat-cell *matCellDef="let x">
-            <mat-chip style="border-radius:999px; font-weight:650;">
-              {{ x.toStatus || x.ToStatus }}
-            </mat-chip>
+            <span class="pill" [ngClass]="(x.toStatus || x.ToStatus || '').toLowerCase()">{{ x.toStatus || x.ToStatus }}</span>
           </td>
         </ng-container>
 

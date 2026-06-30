@@ -1,47 +1,23 @@
-.card {
-  border-radius: 16px;
-  padding: 14px;
-}
+// Shared primitives (.page-head, .list-card, .table-wrap, .cell-main,
+// .cell-sub, .pill, .empty-state, .busy-center) live globally in styles.scss.
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  align-items: flex-end;
-  margin-bottom: 10px;
-}
+.applications-card { padding-top: 2px !important; }
 
-.title {
-  font-size: 18px;
-  font-weight: 800;
-}
-
-.subtitle {
-  font-size: 12px;
-  opacity: 0.7;
-  margin-top: 2px;
-}
-
-.tab-pad {
-  padding: 10px 2px 2px 2px;
-}
+.tab-pad { padding: 16px 4px 4px; }
 
 .job-picker {
   display: flex;
   align-items: center;
   gap: 12px;
   margin-bottom: 8px;
+  flex-wrap: wrap;
 }
-
-.jobField {
-  width: 420px;
-}
-
+.jobField { width: min(420px, 100%); }
 .job-title {
   display: flex;
   align-items: center;
   gap: 6px;
-  opacity: 0.85;
+  color: var(--text-muted);
   font-weight: 600;
 }
 
@@ -49,14 +25,18 @@
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  align-items: flex-end;
-  padding: 8px 0 10px 0;
+  align-items: flex-start;
+  padding: 4px 0 14px;
 }
+// Filter fields are optional (no validators) — reclaim the reserved hint space.
+.filters .mat-mdc-form-field-subscript-wrapper { display: none; }
 
 .filter-actions {
   display: flex;
   gap: 8px;
   margin-left: auto;
+  align-items: center;
+  padding-top: 6px;
 }
 
 .w140 { width: 140px; }
@@ -65,60 +45,12 @@
 .w200 { width: 200px; }
 .w240 { width: 240px; }
 
-.table-wrap {
-  overflow: auto;
-  border-radius: 12px;
-}
-
-.table {
-  width: 100%;
-}
-
-.cell-main {
-  font-weight: 650;
-}
-
-.cell-sub {
-  font-size: 12px;
-  opacity: 0.7;
-}
-
-.actions-col {
-  width: 160px;
-  text-align: right;
-}
-
-.busy {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 18px;
-}
-
-.empty {
-  padding: 18px;
-  opacity: 0.7;
-}
-
-.chip {
-  border-radius: 999px;
-  font-weight: 650;
-}
-.actions-col {
-  width: 200px;
-  text-align: right;
-}
-
+// This page has four row actions, so it needs a wider actions column.
+.actions-col { width: 190px; text-align: right; }
 .actions {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 6px;
+  gap: 4px;
   white-space: nowrap;
 }
-
-.submitted { background: rgba(0,0,0,.06); }
-.reviewed { background: rgba(0, 90, 255, .12); }
-.shortlisted { background: rgba(0, 128, 0, .14); }
-.rejected { background: rgba(255, 0, 0, .14); }
-.hired { background: rgba(120, 0, 255, .14); }

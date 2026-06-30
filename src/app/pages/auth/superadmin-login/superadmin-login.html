@@ -1,29 +1,36 @@
-<div class="wrap">
-  <mat-card class="card">
-    <div class="title">SuperAdmin Login</div>
-    <div class="sub">SaaS owner access (no tenant slug)</div>
+<div class="auth-page">
+  <mat-card class="auth-card">
+    <div class="auth-brand">
+      <div class="auth-badge"><mat-icon>admin_panel_settings</mat-icon></div>
+      <div>
+        <div class="auth-title">SuperAdmin</div>
+        <div class="auth-sub">SaaS owner access — no tenant slug</div>
+      </div>
+    </div>
 
     <form [formGroup]="form" (ngSubmit)="login()">
       <mat-form-field appearance="outline" class="full">
         <mat-label>Email</mat-label>
-        <input matInput formControlName="email" />
+        <mat-icon matPrefix>mail</mat-icon>
+        <input matInput formControlName="email" placeholder="superadmin@erecruitment.com" />
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="full">
         <mat-label>Password</mat-label>
+        <mat-icon matPrefix>lock</mat-icon>
         <input matInput [type]="hide ? 'password' : 'text'" formControlName="password" />
-        <button type="button" mat-icon-button matSuffix (click)="hide = !hide">
+        <button type="button" mat-icon-button matSuffix (click)="hide = !hide"
+                [attr.aria-label]="'Toggle password visibility'">
           <mat-icon>{{ hide ? 'visibility' : 'visibility_off' }}</mat-icon>
         </button>
       </mat-form-field>
 
-      <button mat-flat-button color="primary" class="full" [disabled]="loading">
-        {{ loading ? 'Signing in...' : 'Login' }}
+      <button mat-flat-button color="primary" class="auth-submit" [disabled]="loading">
+        <ng-container *ngIf="!loading; else spinner">Sign in</ng-container>
+        <ng-template #spinner><mat-spinner diameter="22"></mat-spinner></ng-template>
       </button>
     </form>
 
-    <div class="link">
-      <a routerLink="/login">Tenant Login</a>
-    </div>
+    <div class="auth-foot">Not an owner? <a routerLink="/login">Tenant login</a></div>
   </mat-card>
 </div>

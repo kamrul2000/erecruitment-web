@@ -1,11 +1,11 @@
-<mat-card class="card">
-  <div class="header">
-    <div>
-      <div class="title">Audit Logs</div>
-      <div class="subtitle">Who did what, when (Admin only)</div>
-    </div>
+<div class="page-head">
+  <div class="titles">
+    <h1>Audit Logs</h1>
+    <div class="sub">Who did what, when (Admin only)</div>
   </div>
+</div>
 
+<mat-card class="list-card">
   <div class="filters" [formGroup]="form">
     <mat-form-field appearance="outline" class="w170">
       <mat-label>From</mat-label>
@@ -108,13 +108,12 @@
       (page)="onPage($event)">
     </mat-paginator>
 
-    <div class="empty" *ngIf="items().length === 0">No logs found.</div>
+    <div class="empty-state" *ngIf="items().length === 0">No logs found.</div>
   </div>
 
   <ng-template #busy>
-    <div class="busy">
+    <div class="busy-center">
       <mat-spinner diameter="32"></mat-spinner>
-      <div>Loading audit logs...</div>
     </div>
   </ng-template>
 </mat-card>

@@ -1,22 +1,23 @@
-<mat-card class="card">
-  <div class="header">
-    <div>
-      <div class="title">Candidates</div>
-      <div class="subtitle">Manage candidate profiles and CVs</div>
-    </div>
+<div class="page-head">
+  <div class="titles">
+    <h1>Candidates</h1>
+    <div class="sub">Manage candidate profiles and CVs</div>
+  </div>
+  <div class="head-actions">
+    <button mat-flat-button color="primary" (click)="openCreate()">
+      <mat-icon>add</mat-icon>
+      Add candidate
+    </button>
+  </div>
+</div>
 
-    <div class="actions">
-      <mat-form-field appearance="outline" class="search">
-        <mat-label>Search</mat-label>
-        <input matInput (input)="onSearch($any($event.target).value)" placeholder="name, email, phone..." />
-        <mat-icon matSuffix>search</mat-icon>
-      </mat-form-field>
-
-      <button mat-flat-button color="primary" (click)="openCreate()">
-        <mat-icon>add</mat-icon>
-        Add Candidate
-      </button>
-    </div>
+<mat-card class="list-card">
+  <div class="list-toolbar">
+    <mat-form-field appearance="outline" class="search" subscriptSizing="dynamic">
+      <mat-icon matPrefix>search</mat-icon>
+      <input matInput (input)="onSearch($any($event.target).value)" placeholder="Search name, email, phone…" />
+    </mat-form-field>
+    <span class="count muted" *ngIf="!loading()">{{ total() | number }} total</span>
   </div>
 
   <div class="table-wrap" *ngIf="!loading(); else busy">
@@ -87,7 +88,7 @@
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
 
-    <div class="empty" *ngIf="filtered().length === 0">
+    <div class="empty-state" *ngIf="filtered().length === 0">
       No candidates found.
     </div>
 
@@ -101,9 +102,8 @@
   </div>
 
   <ng-template #busy>
-    <div class="busy">
+    <div class="busy-center">
       <mat-spinner diameter="32"></mat-spinner>
-      <div>Loading candidates...</div>
     </div>
   </ng-template>
 </mat-card>

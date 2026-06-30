@@ -1,16 +1,17 @@
-<mat-card class="card">
-  <div class="header">
-    <div>
-      <div class="title">Tenant Settings</div>
-      <div class="subtitle">Branding, limits, pipeline stages, email templates</div>
-    </div>
-
+<div class="page-head">
+  <div class="titles">
+    <h1>Tenant Settings</h1>
+    <div class="sub">Branding, limits, pipeline stages, email templates</div>
+  </div>
+  <div class="head-actions">
     <button mat-stroked-button (click)="load()" [disabled]="loading()">
       <mat-icon>refresh</mat-icon>
       Refresh
     </button>
   </div>
+</div>
 
+<mat-card class="list-card">
   <div *ngIf="!loading(); else busy">
     <mat-tab-group>
       <!-- Branding -->
@@ -117,18 +118,14 @@
               <ng-container matColumnDef="terminal">
                 <th mat-header-cell *matHeaderCellDef> Terminal </th>
                 <td mat-cell *matCellDef="let s">
-                  <mat-chip class="chip" [ngClass]="s.isTerminal ? 'terminal' : 'normal'">
-                    {{ s.isTerminal ? 'Yes' : 'No' }}
-                  </mat-chip>
+                  <span class="pill" [ngClass]="s.isTerminal ? 'accent' : 'neutral'">{{ s.isTerminal ? 'Yes' : 'No' }}</span>
                 </td>
               </ng-container>
 
               <ng-container matColumnDef="status">
                 <th mat-header-cell *matHeaderCellDef> Status </th>
                 <td mat-cell *matCellDef="let s">
-                  <mat-chip class="chip" [ngClass]="stageStatusClass(s.isActive)">
-                    {{ s.isActive ? 'Active' : 'Inactive' }}
-                  </mat-chip>
+                  <span class="pill" [ngClass]="stageStatusClass(s.isActive)">{{ s.isActive ? 'Active' : 'Inactive' }}</span>
                 </td>
               </ng-container>
 
@@ -148,7 +145,7 @@
               <tr mat-row *matRowDef="let row; columns: stageColumns"></tr>
             </table>
 
-            <div class="empty" *ngIf="stages().length === 0">
+            <div class="empty-state" *ngIf="stages().length === 0">
               No stages found.
             </div>
           </div>
@@ -177,9 +174,7 @@
               <ng-container matColumnDef="enabled">
                 <th mat-header-cell *matHeaderCellDef> Enabled </th>
                 <td mat-cell *matCellDef="let t">
-                  <mat-chip class="chip" [ngClass]="t.isEnabled ? 'active' : 'inactive'">
-                    {{ t.isEnabled ? 'Yes' : 'No' }}
-                  </mat-chip>
+                  <span class="pill" [ngClass]="t.isEnabled ? 'active' : 'inactive'">{{ t.isEnabled ? 'Yes' : 'No' }}</span>
                 </td>
               </ng-container>
 
@@ -204,7 +199,7 @@
               <tr mat-row *matRowDef="let row; columns: templateColumns"></tr>
             </table>
 
-            <div class="empty" *ngIf="templates().length === 0">
+            <div class="empty-state" *ngIf="templates().length === 0">
               No templates found.
             </div>
           </div>
@@ -214,9 +209,8 @@
   </div>
 
   <ng-template #busy>
-    <div class="busy">
+    <div class="busy-center">
       <mat-spinner diameter="32"></mat-spinner>
-      <div>Loading settings...</div>
     </div>
   </ng-template>
 </mat-card>

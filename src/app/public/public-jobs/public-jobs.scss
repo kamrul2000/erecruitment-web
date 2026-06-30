@@ -328,6 +328,12 @@
   color: var(--jobs-color-text-muted);
 }
 
+// This page is tenant-branded and intentionally independent of the global admin
+// card styling — re-assert its own elevation so the global rule can't flatten it.
+.public-jobs__card { box-shadow: var(--jobs-shadow-card) !important; }
+.public-jobs__card:hover { box-shadow: 0 16px 38px rgba(15, 23, 42, 0.14) !important; }
+.public-jobs__empty { box-shadow: none !important; }
+
 @media (max-width: 980px) {
   .public-jobs {
     padding-inline: var(--jobs-space-sm);

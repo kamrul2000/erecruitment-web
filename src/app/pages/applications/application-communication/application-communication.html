@@ -42,7 +42,7 @@
           • to {{ e.toEmail }} • {{ e.createdAt | date:'medium' }}
         </div>
       </div>
-      <mat-chip [ngClass]="chip(e.status)">{{ e.status }}</mat-chip>
+      <span class="pill" [ngClass]="(e.status || '').toLowerCase()">{{ e.status }}</span>
     </div>
 
     <div class="err" *ngIf="e.error">Delivery error: {{ e.error }}</div>

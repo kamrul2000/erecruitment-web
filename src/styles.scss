@@ -1,7 +1,7 @@
 @use '@angular/material' as mat;
 
 :root {
-  // Angular Material Theme
+  // Angular Material theme
   @include mat.theme((
     color: (
       primary: mat.$azure-palette,
@@ -11,23 +11,272 @@
     density: 0,
   ));
 
-  // Custom Brand Variables
+  // ----- Design tokens (Clean modern SaaS, refined blue) -----
+  --app-bg: #f4f6fb;            // page background
+  --surface: #ffffff;          // cards / panels
+  --surface-2: #f7f9fc;        // subtle inset (table header, hovers)
+  --border: #e7ebf2;           // hairline borders
+  --border-strong: #d6dde8;
+
+  --text: #1b2333;             // primary text
+  --text-muted: #66707f;       // secondary text
+  --text-faint: #94a0b1;       // tertiary / placeholders
+
+  --primary: #1976d2;
+  --primary-strong: #1565c0;
+  --primary-weak: #e9f1fc;     // tinted backgrounds (active nav, hovers)
+
+  --radius-sm: 8px;
+  --radius: 12px;
+  --radius-lg: 16px;
+
+  --shadow-sm: 0 1px 2px rgba(16, 24, 40, .06), 0 1px 3px rgba(16, 24, 40, .04);
+  --shadow: 0 6px 16px rgba(16, 24, 40, .08);
+  --shadow-lg: 0 16px 32px rgba(16, 24, 40, .12);
+
+  --space: 16px;
+
+  // Legacy brand vars (still referenced by tenant theming)
   --brand-primary: #1976d2;
   --brand-secondary: #9c27b0;
   --brand-bg: #ffffff;
-  --brand-font: Inter, system-ui, Arial, sans-serif;
+  --brand-font: Inter, system-ui, 'Segoe UI', Roboto, Arial, sans-serif;
 }
 
-html, body {
-  height: 100%;
-  margin: 0;
-}
+html, body { height: 100%; margin: 0; }
 
 body {
-  background: var(--brand-bg);
+  background: var(--app-bg);
+  color: var(--text);
   font-family: var(--brand-font);
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-a {
-  color: var(--brand-primary);
+a { color: var(--primary); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+* { scrollbar-width: thin; scrollbar-color: var(--border-strong) transparent; }
+*::-webkit-scrollbar { width: 10px; height: 10px; }
+*::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 8px; border: 3px solid transparent; background-clip: content-box; }
+
+// ===========================================================================
+//  Shared layout primitives — pages opt into these for a consistent look.
+// ===========================================================================
+
+// Page header: title + subtitle on the left, actions on the right.
+.page-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+.page-head .titles h1,
+.page-head .titles .h1 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.page-head .titles .sub {
+  margin-top: 2px;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+.page-head .head-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+// Generic surface card.
+.surface-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.muted { color: var(--text-muted); }
+
+.empty-state {
+  padding: 40px 16px;
+  text-align: center;
+  color: var(--text-muted);
+}
+.busy-center { display: flex; justify-content: center; align-items: center; padding: 40px; }
+
+// Status pills — one consistent vocabulary across the whole app.
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.6;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+.pill::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: .9; }
+.pill.neutral, .pill.draft, .pill.closed, .pill.withdrawn, .pill.expired, .pill.note,
+.pill.recruiter, .pill.inactive, .pill.disabled, .pill.free { color: #5b6573; background: #eef1f5; }
+.pill.info, .pill.submitted, .pill.sent, .pill.scheduled,
+.pill.manager, .pill.hiringmanager, .pill.pro { color: #1565c0; background: #e7f0fc; }
+.pill.warn, .pill.reviewed, .pill.noshow { color: #9a6700; background: #fff4d6; }
+.pill.accent, .pill.shortlisted, .pill.scorecard,
+.pill.admin, .pill.superadmin, .pill.enterprise { color: #6d28d9; background: #efe9fd; }
+.pill.success, .pill.hired, .pill.published, .pill.accepted, .pill.completed,
+.pill.active, .pill.strongyes, .pill.yes { color: #1a7f48; background: #e4f6ec; }
+.pill.danger, .pill.rejected, .pill.declined, .pill.failed, .pill.cancelled, .pill.no, .pill.strongno { color: #c0392b; background: #fdecea; }
+
+// ===========================================================================
+//  Material refinements — app-wide consistency for cards, buttons, tables.
+// ===========================================================================
+
+.mat-mdc-card {
+  border-radius: var(--radius-lg) !important;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm) !important;
+  background: var(--surface);
+}
+
+.mat-mdc-raised-button,
+.mat-mdc-unelevated-button,
+.mat-mdc-outlined-button,
+.mat-mdc-button {
+  border-radius: 10px !important;
+  letter-spacing: .01em;
+}
+
+// Tables: quiet header, hairline rows, subtle row hover.
+.mat-mdc-table { background: transparent; }
+.mat-mdc-header-row { background: var(--surface-2); }
+.mat-mdc-header-cell {
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+}
+.mat-mdc-row { transition: background .12s ease; }
+.mat-mdc-row:hover { background: var(--surface-2); }
+.mat-mdc-cell, .mat-mdc-header-cell { border-bottom-color: var(--border) !important; }
+
+.mat-mdc-paginator { background: transparent; color: var(--text-muted); }
+
+// Dialogs a touch softer.
+.mat-mdc-dialog-surface { border-radius: var(--radius-lg) !important; }
+
+// ===========================================================================
+//  Auth pages (tenant login / superadmin login) — one shared look.
+// ===========================================================================
+.auth-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background:
+    radial-gradient(1100px 460px at 50% -8%, rgba(25, 118, 210, .12), transparent 62%),
+    var(--app-bg);
+}
+.auth-card { width: 100%; max-width: 420px; padding: 30px 28px !important; box-shadow: var(--shadow-lg) !important; }
+.auth-brand { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px; margin-bottom: 22px; }
+.auth-badge {
+  width: 52px; height: 52px; border-radius: 15px;
+  display: grid; place-items: center; color: #fff;
+  background: linear-gradient(135deg, var(--primary), var(--primary-strong));
+  box-shadow: 0 8px 18px rgba(21, 101, 192, .35);
+}
+.auth-badge mat-icon { font-size: 28px; width: 28px; height: 28px; }
+.auth-title { font-size: 20px; font-weight: 800; letter-spacing: -0.01em; }
+.auth-sub { font-size: 13px; color: var(--text-muted); margin-top: 3px; }
+.auth-card .full { width: 100%; }
+.auth-submit { width: 100%; height: 46px !important; margin-top: 4px; }
+.auth-submit mat-spinner { margin: 0 auto; }
+.auth-card .mat-mdc-form-field-icon-prefix mat-icon { color: var(--text-faint); margin: 0 4px; }
+.auth-foot { margin-top: 18px; text-align: center; font-size: 13px; color: var(--text-muted); }
+.auth-foot a { font-weight: 600; }
+.auth-hint { margin-top: 12px; text-align: center; font-size: 12px; color: var(--text-faint); }
+
+// ===========================================================================
+//  List / table pages (candidates, jobs, applications, users, audit logs…)
+// ===========================================================================
+.list-card { padding: 8px 14px 6px !important; }
+.list-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 4px 14px;
+  flex-wrap: wrap;
+}
+.list-toolbar .search { width: min(340px, 100%); }
+.list-toolbar .count { font-size: 13px; }
+.search .mat-mdc-form-field-icon-prefix mat-icon { color: var(--text-faint); margin: 0 6px 0 2px; }
+
+.table-wrap { overflow-x: auto; }
+.table-wrap .table { width: 100%; }
+.cell-main { font-weight: 600; }
+.cell-sub { font-size: 12px; color: var(--text-muted); max-width: 520px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.actions-col { width: 116px; text-align: right; }
+
+// ===========================================================================
+//  Dialog forms (create / edit dialogs) — one consistent chrome + form layout.
+// ===========================================================================
+.mat-mdc-dialog-title {
+  font-size: 18px !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.01em;
+  padding: 20px 24px 6px !important;
+  color: var(--text);
+}
+
+.mat-mdc-dialog-content {
+  padding: 6px 24px 6px !important;
+  color: var(--text);
+  max-height: 74vh;
+}
+
+.mat-mdc-dialog-actions {
+  padding: 12px 24px 16px !important;
+  gap: 8px;
+  margin-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+// Shared form layout used inside dialogs.
+.mat-mdc-dialog-content .grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 14px;
+  margin-top: 8px;
+}
+.mat-mdc-dialog-content .full { grid-column: 1 / -1; }
+.mat-mdc-dialog-content .divider { grid-column: 1 / -1; margin: 4px 0; }
+.mat-mdc-dialog-content .toggle { display: flex; align-items: center; min-height: 48px; }
+.mat-mdc-dialog-content .section-title {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin: 16px 0 8px;
+}
+.mat-mdc-dialog-content .hint { font-size: 12px; color: var(--text-muted); margin-top: 12px; }
+.mat-mdc-dialog-content .field-label { display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
+.mat-mdc-dialog-content .file-pick {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  border: 1px dashed var(--border-strong);
+  border-radius: 10px;
+  padding: 12px 14px;
+  background: var(--surface-2);
+}
+.mat-mdc-dialog-content .file-name { font-size: 13px; font-weight: 600; }
+
+@media (max-width: 720px) {
+  .mat-mdc-dialog-content .grid { grid-template-columns: 1fr; }
 }
