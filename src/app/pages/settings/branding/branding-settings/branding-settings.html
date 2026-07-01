@@ -74,11 +74,12 @@
         <div class="panel-title">Logo</div>
 
         <div class="logo-row">
-          <button mat-stroked-button>
+          <button mat-stroked-button type="button" (click)="logoInput.click()">
             <mat-icon>upload</mat-icon>
             <span>Upload Logo</span>
-            <input class="file" type="file" accept="image/*" (change)="onLogoSelected($event)" />
           </button>
+          <input #logoInput class="file" type="file" hidden
+                 accept="image/png,image/jpeg,image/webp" (change)="onLogoSelected($event)" />
 
           <mat-form-field appearance="outline" class="full">
             <mat-label>Logo URL</mat-label>
@@ -106,7 +107,7 @@
           [style.fontFamily]="preview().fontFamily">
 
           <div class="phead">
-            <img *ngIf="preview().logoUrl" class="logo" [src]="preview().logoUrl" alt="logo" />
+            <img *ngIf="logoSrc()" class="logo" [src]="logoSrc()" alt="logo" />
             <div>
               <div class="pname">{{ preview().companyName }}</div>
               <div class="psub">Careers Portal Preview</div>

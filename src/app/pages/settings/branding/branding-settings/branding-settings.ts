@@ -13,6 +13,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDividerModule } from '@angular/material/divider';
 
 import { TenantThemeService } from '../../../../core/services/tenant-theme.service';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-branding-settings',
@@ -56,6 +57,14 @@ export class BrandingSettingsComponent {
       backgroundColor: v.backgroundColor || '#ffffff',
       logoUrl: v.logoUrl || null
     };
+  });
+
+  // Uploaded logos come back as a relative '/uploads/...' path that must be
+  // served from the API origin, not the SPA — resolve it for the preview.
+  logoSrc = computed(() => {
+    const url = this.preview().logoUrl;
+    if (!url) return null;
+    return /^https?:\/\//i.test(url) ? url : `${environment.apiBaseUrl}${url}`;
   });
 
   constructor(
